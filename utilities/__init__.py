@@ -8,6 +8,22 @@ MIN_LEN_STRING = 0
 
 option_list = ['y', 'yes', 'Y', 'YES', 'YeS', 'YEs']
 
+info = ['localhost', 'root', 'MySQL85.#(6@', 'ecommerce']
+
+VALUE_ERROR_MSG = "Option must be a string!!"
+
+LOG_AS_ADMIN = 1
+LOG_AS_CUSTOMER = 2
+
+EXIT = 3
+EXIT_ADMIN_LOG = 2
+
+SIGN_IN = 1
+SIGN_UP = 2
+
+EMAIL_MAX_LEN = 20
+PSW_MAX_LEN = 32
+
 
 def check_answer(option):
     if option in option_list:
@@ -16,36 +32,86 @@ def check_answer(option):
     return False
 
 
-def get_information(word, max_, min_):
-    info = ''
+def get_email(max_len):
+    while True:
+        email_ = input("\nInsert the email: ")
 
-    while len(info) > max_ or len(info) <= min_:
-        info = input(word)
-
-    return info
+        if email_.endswith("@gmail.com") and len(email_) < max_len:
+            return email_
 
 
-def get_info():
-    info = []
+def get_psw(max_len):
+    psw = ''
+    while len(psw) <= 0 or len(psw) > max_len:
+        psw = input("\nInsert the password: ")
 
-    # check if he wants to connect to the database with the password
-    if check_answer(input("\nContinue with the default setup (password required) (y / n): ")):
-        info.append(DEFAULT_SETUP)
-    else:   # setup the database without the password
-        print("\nOkay you will connect to the database without the password :3")
-        info.append(N0_PSW_SETUP)
+    return psw
 
-    # check if he wants to change the host
-    if check_answer(input("\nThe default host is: localhost, do you want to change it (y / n): ")):
-        info.append(input("\nInsert new host: "))
-    else:
-        info.append(DEFAULT_HOST)
 
-    info.append(get_information('\nInsert the username: ', MAX_LEN_STRING, MIN_LEN_STRING))
+def get_info_admin():
+    credentials = (get_email(EMAIL_MAX_LEN), get_psw(PSW_MAX_LEN))
 
-    if info[0]:
-        info.append(get_information('\nInsert the password: ', MAX_LEN_STRING, MIN_LEN_STRING))
+    return credentials
 
-    info.append(get_information('\nInsert the database name: ', MAX_LEN_STRING, MIN_LEN_STRING))
 
-    return info
+def initial_customer_menu():
+    exit_ = False
+
+    while not exit_:
+        try:
+            option = int(input("\n1)Sign In\n2)Sign Up\n3)exit\n\nInsert option (1 / 3): "))
+
+            if option == SIGN_IN:
+                pass
+            elif option == SIGN_UP:
+                pass
+            elif option == EXIT:
+                return False
+            else:
+                print(f"\n{option} is not a valid option!!")
+
+        except ValueError:
+            print(f"\n{VALUE_ERROR_MSG}")
+
+
+def initial_admin_menu():
+    exit_ = False
+
+    while not exit_:
+        try:
+            option = int(input("\n1)Sign In\n2)Exit\n\nInsert option (1 / 2): "))
+
+            if option == SIGN_IN:
+                get_info_admin()
+
+            elif option == EXIT_ADMIN_LOG:
+                return False
+            else:
+                print(f"\n{option} is not a valid option!!")
+
+        except ValueError:
+            print(f"\n{VALUE_ERROR_MSG}")
+
+
+def general_menu():
+    exit_ = False
+
+    while not exit_:
+        try:
+            option = int(input("\n1)Log as Admin\n2)Log as Customer\n3)Exit\n\nInsert option (1 / 3): "))
+
+            if option == LOG_AS_ADMIN:
+                if not initial_admin_menu():
+                    return False
+
+            elif option == LOG_AS_CUSTOMER:
+                if not initial_customer_menu():
+                    return False
+
+            elif option == EXIT:
+                return False
+            else:
+                print(f"\n{option} is not a correct option!!")
+
+        except ValueError:
+            print(f"\n{VALUE_ERROR_MSG}")

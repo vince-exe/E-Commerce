@@ -28,6 +28,7 @@ CREATE TABLE product (
 	id INTEGER PRIMARY KEY NOT NULL AUTO_INCREMENT,
     product_name VARCHAR(20) NOT NULL UNIQUE,
     price DOUBLE NOT NULL
+    qnt INT
 );
 
 CREATE TABLE product_ordered (
@@ -39,4 +40,13 @@ CREATE TABLE product_ordered (
     FOREIGN KEY (order_id) REFERENCES my_order(id)
 );
 
+CREATE TABLE administrator (
+	id INTEGER PRIMARY KEY NOT NULL AUTO_INCREMENT,
+	person_id INTEGER UNIQUE NOT NULL,
+
+    FOREIGN KEY (person_id) REFERENCES person(id)
+);
+
+-- first insert the person and after reference the person to the administrator
 INSERT INTO person(first_name, last_name, email, psw) VALUES ("root", "root", "root@gmail.com", "root2580");
+INSERT INTO administrator(person_id) VALUES (1);
