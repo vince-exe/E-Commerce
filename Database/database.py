@@ -36,3 +36,8 @@ class Database:
     def show_all_(cursor, table_name):
         cursor.execute(f"SELECT * FROM {table_name}")
         return cursor.fetchall()
+
+    @staticmethod
+    def get_admin_info(cursor, table_name, condition):
+        cursor.execute(f"SELECT first_name, last_name, email, psw FROM {table_name} WHERE {condition}")
+        return cursor.fetchone()

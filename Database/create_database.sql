@@ -27,7 +27,7 @@ CREATE TABLE my_order (
 CREATE TABLE product (
 	id INTEGER PRIMARY KEY NOT NULL AUTO_INCREMENT,
     product_name VARCHAR(20) NOT NULL UNIQUE,
-    price DOUBLE NOT NULL
+    price DOUBLE NOT NULL,
     qnt INT
 );
 
