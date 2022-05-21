@@ -1,4 +1,5 @@
 from mysql.connector import errorcode
+from utilities.utils import *
 
 import mysql.connector
 
@@ -21,16 +22,15 @@ class Database:
                                            )
 
         except mysql.connector.Error as err:
+
             if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
-                print("\nSomething went wrong with username or password")
-                return False
+                return get_value(DatabaseErrors.ACCESS_DENIED)
 
             elif err.errno == errorcode.ER_BAD_DB_ERROR:
-                print(f"\nThe database [{self.db_name}] doesn't exist")
-                return False
+                return get_value(DatabaseErrors.DB_ERROR)
 
-            else:
-                return False
+        except mysql.connector.errors.OperationalError:
+            return get_value(DatabaseErrors.CONNECTION_LOST)
 
     @staticmethod
     def show_all_(cursor, table_name):
@@ -39,5 +39,26 @@ class Database:
 
     @staticmethod
     def get_admin_info(cursor, table_name, condition):
-        cursor.execute(f"SELECT first_name, last_name, email, psw FROM {table_name} WHERE {condition}")
-        return cursor.fetchone()
+        try:
+            cursor.execute(f"SELECT first_name, last_name, email, psw FROM {table_name} WHERE {condition}")
+            return cursor.fetchone()
+
+        except mysql.connector.errors.OperationalError:
+            return get_value(DatabaseErrors.CONNECTION_LOST)
+
+    @staticmethod
+    def add_product(cursor, values, connection):
+        query = "INSERT INTO product (product_name, price, qnt) VALUES (%s, %s, %s);"
+        args = (values[0], f'{values[1]}', values[2])
+
+        # try to execute the query
+        try:
+            cursor.execute(query, args)
+
+        except mysql.connector.errors.IntegrityError:
+            return get_value(DatabaseErrors.NAME_ALREADY_EXIST)
+
+        except mysql.connector.errors.OperationalError:
+            return get_value(DatabaseErrors.CONNECTION_LOST)
+
+        connection.commit()
