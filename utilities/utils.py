@@ -1,6 +1,9 @@
-import enum
-
+import enum, os
 option_list = ['y', 'yes', 'Y', 'YES', 'YeS', 'YEs']
+
+
+def clear_screen():
+    print("\n" * 15)
 
 
 def get_value(enum_value):
@@ -8,29 +11,31 @@ def get_value(enum_value):
 
 
 def get_info_admin(database, cursor):
-    credentials = (get_email(get_value(CredentialsOptions.EMAIL_MAX_LEN)), get_psw(get_value(CredentialsOptions.PSW_MAX_LEN)))
-    root_cred = database.get_admin_info(cursor, 'person', f'email = "{credentials[0]}"')
+    log_credentials = (get_email(get_value(CredentialsOptions.EMAIL_MAX_LEN)),
+                       get_psw(get_value(CredentialsOptions.PSW_MAX_LEN)))
 
-    if root_cred == get_value(DatabaseErrors.CONNECTION_LOST):
-        print(f"\nThe application lost the connection with the server :(")
+    db_credential = database.get_admin_info(cursor, log_credentials[0])
+
+    return handle_root_conn_errors(log_credentials, db_credential)
+
+
+def handle_root_conn_errors(log_in_cred, db_cred):
+    # check if the connection has lost
+    if db_cred == get_value(DatabaseErrors.CONNECTION_LOST):
+        print(f"\nThe application has lost the connection with the server :(")
         return False
 
-    elif not check_validity(credentials, root_cred):
+    # the email doesn't match
+    elif db_cred is None:
         print(f'\nSomething went wrong with username or password')
-        return False
-    else:
-        print(f"\nIt's nice to see you {root_cred[0]}")
-        return True
-
-
-def check_validity(log_in_cred, db_cred):
-    if db_cred is None:
         return False
 
     # check the password
-    elif log_in_cred[1] != db_cred[3]:
+    elif log_in_cred[1] != db_cred[2]:
+        print(f'\nSomething went wrong with username or password')
         return False
 
+    print(f"\nIt's nice to see you {db_cred[0]}")
     return True
 
 
@@ -110,7 +115,13 @@ def handle_product_errors(error, prod_info):
 
 
 def handle_db_conn_errors(error, database):
-    if error == get_value(DatabaseErrors.ACCESS_DENIED):
+    if error is None:
+        print("\nThe server is unreachable")
+
+        input("\nPress any key to continue...")
+        exit(-1)
+
+    elif error == get_value(DatabaseErrors.ACCESS_DENIED):
         print("\nSomething went wrong with username and password")
 
         input("\nPress any key to continue...")
@@ -152,7 +163,8 @@ class AdminOptions(enum.Enum):
     DELETE_PRODUCT = 6
     DELETE_CUSTOMER = 7
     SEARCH_CUSTOMER = 8
-    EXIT = 9
+    DELETE_ADMIN = 9
+    EXIT = 10
     EXIT_LOG = 2
 
 

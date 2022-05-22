@@ -33,14 +33,12 @@ class Database:
             return get_value(DatabaseErrors.CONNECTION_LOST)
 
     @staticmethod
-    def show_all_(cursor, table_name):
-        cursor.execute(f"SELECT * FROM {table_name}")
-        return cursor.fetchall()
-
-    @staticmethod
-    def get_admin_info(cursor, table_name, condition):
+    def get_admin_info(cursor, email):
         try:
-            cursor.execute(f"SELECT first_name, last_name, email, psw FROM {table_name} WHERE {condition}")
+            cursor.execute(f"""SELECT first_name, email, psw 
+                               FROM person JOIN administrator ON person.id = administrator.person_id
+                               WHERE person.email = '{email}'
+                           """)
             return cursor.fetchone()
 
         except mysql.connector.errors.OperationalError:
@@ -62,3 +60,24 @@ class Database:
             return get_value(DatabaseErrors.CONNECTION_LOST)
 
         connection.commit()
+
+    @staticmethod
+    def get_customers(cursor, limit):
+        try:
+            cursor.execute(f'''SELECT customer.id, first_name, last_name, email, psw
+                               FROM customer JOIN person
+                               ON customer.person_id = person.id LIMIT {limit}
+                          ''')
+            return cursor.fetchall()
+
+        except mysql.connector.errors.OperationalError:
+            return get_value(DatabaseErrors.CONNECTION_LOST)
+
+    @staticmethod
+    def get_products(cursor, limit):
+        try:
+            cursor.execute(f"SELECT * FROM product LIMIT {limit}")
+            return cursor.fetchall()
+
+        except mysql.connector.errors.OperationalError:
+            return get_value(DatabaseErrors.CONNECTION_LOST)
