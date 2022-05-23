@@ -59,6 +59,9 @@ class Database:
         except mysql.connector.errors.OperationalError:
             return get_value(DatabaseErrors.CONNECTION_LOST)
 
+        except mysql.connector.errors.DataError:
+            return get_value(DatabaseErrors.DATA_ERROR)
+
         connection.commit()
 
     @staticmethod
@@ -77,6 +80,27 @@ class Database:
     def get_products(cursor, limit):
         try:
             cursor.execute(f"SELECT * FROM product LIMIT {limit}")
+            return cursor.fetchall()
+
+        except mysql.connector.errors.OperationalError:
+            return get_value(DatabaseErrors.CONNECTION_LOST)
+
+    @staticmethod
+    def get_super_root(cursor):
+        try:
+            cursor.execute("""SELECT email, psw FROM person
+                              JOIN administrator ON administrator.person_id = person.id
+                              WHERE administrator.id = 1"""
+                           )
+            return cursor.fetchone()
+
+        except mysql.connector.errors.OperationalError:
+            return get_value(DatabaseErrors.CONNECTION_LOST)
+
+    @staticmethod
+    def get_product_searched(cursor, prod_name, limit):
+        try:
+            cursor.execute(f"SELECT * FROM product WHERE product.product_name LIKE '%{prod_name}%' LIMIT {limit}")
             return cursor.fetchall()
 
         except mysql.connector.errors.OperationalError:
