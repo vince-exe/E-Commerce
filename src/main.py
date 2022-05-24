@@ -14,5 +14,6 @@ if __name__ == '__main__':
     if not general_menu(database, cursor, connection):
         print("\nBye")
 
+    # close the connections
     cursor.close()
     connection.close()

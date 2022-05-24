@@ -27,7 +27,7 @@ class Database:
                 return get_value(DatabaseErrors.ACCESS_DENIED)
 
             elif err.errno == errorcode.ER_BAD_DB_ERROR:
-                return get_value(DatabaseErrors.DB_ERROR)
+                return get_value(DatabaseErrors.DB_EXCEPTION)
 
         except mysql.connector.errors.OperationalError:
             return get_value(DatabaseErrors.CONNECTION_LOST)
@@ -101,6 +101,48 @@ class Database:
     def get_product_searched(cursor, prod_name, limit):
         try:
             cursor.execute(f"SELECT * FROM product WHERE product.product_name LIKE '%{prod_name}%' LIMIT {limit}")
+            return cursor.fetchall()
+
+        except mysql.connector.errors.OperationalError:
+            return get_value(DatabaseErrors.CONNECTION_LOST)
+
+    @staticmethod
+    def delete_product(cursor, connection, id_):
+        try:
+            cursor.execute(f"DELETE FROM product WHERE id = {id_}")
+
+        except mysql.connector.errors.OperationalError:
+            return get_value(DatabaseErrors.CONNECTION_LOST)
+
+        except mysql.connector.errors.InterfaceError:
+            return get_value(DatabaseErrors.CONNECTION_LOST)
+
+        connection.commit()
+
+    @staticmethod
+    def delete_customer(cursor, connection, id_):
+        try:
+            cursor.execute(f"DELETE FROM customer WHERE person_id = {id_}")
+
+        except mysql.connector.errors.OperationalError:
+            return get_value(DatabaseErrors.CONNECTION_LOST)
+
+        except mysql.connector.errors.InterfaceError:
+            return get_value(DatabaseErrors.CONNECTION_LOST)
+
+        connection.commit()
+
+    @staticmethod
+    def delete_person(cursor, connection, id_):
+        cursor.execute(f"DELETE FROM person WHERE id = {id_}")
+        connection.commit()
+
+    @staticmethod
+    def get_customer_searched(cursor, customer_name, limit):
+        try:
+            cursor.execute(f"""SELECT person.id, first_name, last_name, email, psw
+                               FROM person JOIN customer ON person.id = customer.person_id
+                               WHERE person.first_name LIKE '%{customer_name}%' LIMIT {limit}""")
             return cursor.fetchall()
 
         except mysql.connector.errors.OperationalError:

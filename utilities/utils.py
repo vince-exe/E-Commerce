@@ -50,14 +50,14 @@ def handle_super_root_log(login_cred, super_root):
 
 def handle_root_conn_errors(log_in_cred, db_cred):
     # check if the connection has lost
-    if db_cred == get_value(DatabaseErrors.CONNECTION_LOST):
-        print(f"\nThe application has lost the connection with the server :(")
+    if db_cred is None:
+        print("\nSomething went wrong with username or password")
 
         input("\nPress any key to continue...")
         return False
 
-    elif db_cred is None:
-        print("\nSomething went wrong with username or password")
+    elif db_cred == get_value(DatabaseErrors.CONNECTION_LOST):
+        print(f"\nThe application has lost the connection with the server :(")
 
         input("\nPress any key to continue...")
         return False
@@ -73,6 +73,16 @@ def handle_root_conn_errors(log_in_cred, db_cred):
 
     input("\nPress any key to continue...")
     return False
+
+
+def handle_rmv_errors(removed_product):
+    if removed_product == get_value(DatabaseErrors.CONNECTION_LOST):
+        print(f"\nThe application has lost the connection with the server :(")
+
+        input("\nPress any key to continue...")
+        return False
+
+    return True
 
 
 def get_email(max_len):
@@ -157,7 +167,7 @@ Password: {customer[4]}
 
 def handle_product_errors(error, prod_info):
     if error == get_value(DatabaseErrors.CONNECTION_LOST):
-        print(f"\nCan't add the product: {prod_info} the application lost the connection with the server :(")
+        print(f"\nCan't add the product: {prod_info[0]} the application lost the connection with the server :(")
 
         input("\nPress any key to continue...")
         return
@@ -194,7 +204,7 @@ def handle_db_conn_errors(error, database):
         input("\nPress any key to continue...")
         exit(-1)
 
-    elif error == get_value(DatabaseErrors.DB_ERROR):
+    elif error == get_value(DatabaseErrors.DB_EXCEPTION):
         print(f'\nThere is no database with the name: {database.db_name}')
 
         input("\nPress any key to continue...")
@@ -212,13 +222,41 @@ def handle_db_conn_errors(error, database):
 
 
 def handle_product_searched(product, product_name):
-    if not len(product):
+    if product == -1:
+        print("\nThe application has lost the connection with the server")
+
+        input("\nPress any key to continue...")
+        return False
+
+    elif not len(product):
         print(f"\nNo product named: {product_name}")
 
         input("\nPress any key to continue...")
         return False
 
     elif product == get_value(DatabaseErrors.CONNECTION_LOST):
+        print("\nThe application has lost the connection with the server")
+
+        input("\nPress any key to continue...")
+        return False
+
+    return True
+
+
+def handle_customer_searched_errors(customer_searched, customer_name):
+    if customer_searched == -1:
+        print("\nThe application has lost the connection with the server")
+
+        input("\nPress any key to continue...")
+        return False
+
+    elif not len(customer_searched):
+        print(f"\nNo customer named: {customer_name}")
+
+        input("\nPress any key to continue...")
+        return False
+
+    elif customer_searched == get_value(DatabaseErrors.CONNECTION_LOST):
         print("\nThe application has lost the connection with the server")
 
         input("\nPress any key to continue...")
@@ -271,7 +309,7 @@ class DatabaseErrors(enum.Enum):
     NAME_ALREADY_EXIST = 0
     CONNECTION_LOST = -1
     ACCESS_DENIED = -2
-    DB_ERROR = -3
+    DB_EXCEPTION = -3
     DATA_ERROR = -4
 
 
