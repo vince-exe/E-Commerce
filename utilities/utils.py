@@ -1,4 +1,4 @@
-import enum
+from utilities.enums import *
 
 option_list = ['y', 'yes', 'Y', 'YES', 'YeS', 'YEs']
 
@@ -11,6 +11,14 @@ def get_value(enum_value):
     return enum_value.value
 
 
+def get_name_surname(max_, string):
+    name = ""
+    while len(name) <= 0 or len(name) > max_:
+        name = input(f"\n{string}")
+
+    return name
+
+
 def get_info_admin(database, cursor):
     log_credentials = (get_email(get_value(CredentialsOptions.EMAIL_MAX_LEN)),
                        get_psw(get_value(CredentialsOptions.PSW_MAX_LEN)))
@@ -20,6 +28,26 @@ def get_info_admin(database, cursor):
     return handle_root_conn_errors(log_credentials, db_credential)
 
 
+def get_info_customer():
+    log_credentials = [
+                       get_name_surname(get_value(CredentialsOptions.EMAIL_MAX_LEN), "First Name: "),
+                       get_name_surname(get_value(CredentialsOptions.EMAIL_MAX_LEN), "Last Name: "),
+                       get_email(get_value(CredentialsOptions.EMAIL_MAX_LEN)),
+                       get_psw(get_value(CredentialsOptions.PSW_MAX_LEN))
+                       ]
+
+    return log_credentials
+
+
+def get_psw_email_customer():
+    log_credentials = [
+                      get_email(get_value(CredentialsOptions.EMAIL_MAX_LEN)),
+                      get_psw(get_value(CredentialsOptions.PSW_MAX_LEN))
+                      ]
+
+    return log_credentials
+
+
 def get_super_root_info(database, cursor):
     log_credentials = (get_email(get_value(CredentialsOptions.EMAIL_MAX_LEN)),
                        get_psw(get_value(CredentialsOptions.PSW_MAX_LEN)))
@@ -27,6 +55,34 @@ def get_super_root_info(database, cursor):
     db_credentials = database.get_super_root(cursor)
 
     return handle_super_root_log(log_credentials, db_credentials)
+
+
+def handle_sign_in_customer(login_cred, database, cursor):
+    db_cred = database.get_customer_info(cursor, login_cred[0])
+
+    if db_cred is None:
+        print("\nSomething went wrong with username and password")
+
+        input("\nPress any key to continue...")
+        return False
+
+    elif db_cred == get_value(DatabaseErrors.CONNECTION_LOST):
+        print("\nThe application has lost the connection with the server")
+
+        input("\nPress any key to continue...")
+        return False
+
+    # check the password of the database and the password of the login
+    elif db_cred[1] == login_cred[1]:
+        print(f"\nIt's nice to see you again {db_cred[2]}")
+
+        input("\nPress any key to continue...")
+        return True
+
+    print("\nSomething went wrong with username and password")
+
+    input("\nPress any key to continue...")
+    return False
 
 
 def handle_super_root_log(login_cred, super_root):
@@ -125,10 +181,11 @@ def get_price(min_, max_):
 
 
 def get_product_info():
-    info = []
-    info.append(input("\nInsert the name: "))
-    info.append(float(get_price(get_value(PriceOptions.MIN), get_value(PriceOptions.MAX))))
-    info.append(int(get_qnt(get_value(QntOptions.MIN), get_value(QntOptions.MAX))))
+    info = [
+            input("\nInsert the name: "),
+            float(get_price(get_value(PriceOptions.MIN), get_value(PriceOptions.MAX))),
+            int(get_qnt(get_value(QntOptions.MIN), get_value(QntOptions.MAX)))
+            ]
 
     return info
 
@@ -265,61 +322,29 @@ def handle_customer_searched_errors(customer_searched, customer_name):
     return True
 
 
-class StringOptions(enum.Enum):
-    MAX_LEN_STRING = 256
-    MIN_LEN_STRING = 0
+def handle_add_person_errors(person, info_customer):
+    if person is None:
+        print(f'\nSuccessfully registered, log in to use the application!!')
+
+        input("\nPress any key to continue...")
+        return True
+
+    elif person == get_value(DatabaseErrors.CONNECTION_LOST):
+        print(f"\nCan't sign up the application has lost the connection with the server")
+
+        input("\nPress any key to continue...")
+        return False
+
+    elif person == get_value(DatabaseErrors.EMAIL_ALREADY_EXIST):
+        print(f'\nThere is already an user with the email: {info_customer[2]}')
+
+        input("\nPress any key to continue...")
+        return False
 
 
-class CredentialsOptions(enum.Enum):
-    EMAIL_MAX_LEN = 20
-    PSW_MAX_LEN = 32
+def handle_add_customer(person):
+    if person == get_value(DatabaseErrors.CONNECTION_LOST):
+        print("\nThe application has lost the connection with the server")
 
-
-class AdminOptions(enum.Enum):
-    VIEW_CUSTOMERS = 1
-    VIEW_PRODUCTS = 2
-    ADD_PRODUCT = 3
-    SEARCH_PRODUCT = 4
-    DELETE_PRODUCT = 5
-    DELETE_CUSTOMER = 6
-    SEARCH_CUSTOMER = 7
-    EXIT = 8
-    EXIT_LOG = 2
-
-
-class SuperRootOptions(enum.Enum):
-    ADD_ADMIN = 1
-    DELETE_ADMIN = 2
-    SEARCH_ADMIN = 3
-    MODIFY_ADMIN = 4
-    EXIT = 5
-
-
-class PriceOptions(enum.Enum):
-    MIN = 0.99
-    MAX = 9999.00
-
-
-class QntOptions(enum.Enum):
-    MIN = 1
-    MAX = 9999
-
-
-class DatabaseErrors(enum.Enum):
-    NAME_ALREADY_EXIST = 0
-    CONNECTION_LOST = -1
-    ACCESS_DENIED = -2
-    DB_EXCEPTION = -3
-    DATA_ERROR = -4
-
-
-class GeneralOptions(enum.Enum):
-    SIGN_IN = 1
-    SIGN_UP = 2
-    EXIT = 3
-
-
-class GeneralMenuOptions(enum.Enum):
-    LOG_AS_ADMIN = 1
-    LOG_AS_CUSTOMER = 2
-    EXIT = 3
+        input("\nPress any key to continue...")
+        return False

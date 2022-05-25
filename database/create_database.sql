@@ -35,7 +35,8 @@ CREATE TABLE product_ordered (
 	id INTEGER PRIMARY KEY NOT NULL AUTO_INCREMENT,
     product_id INTEGER NOT NULL,
     order_id INTEGER NOT NULL,
-    
+    date_ DATE,
+
     FOREIGN KEY (product_id) REFERENCES product(id),
     FOREIGN KEY (order_id) REFERENCES my_order(id)
 );

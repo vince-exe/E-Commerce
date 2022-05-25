@@ -1,5 +1,6 @@
 from mysql.connector import errorcode
 from utilities.utils import *
+from utilities.enums import *
 
 import mysql.connector
 
@@ -65,6 +66,35 @@ class Database:
         connection.commit()
 
     @staticmethod
+    def add_person(cursor, values, connection):
+        query = "INSERT INTO person (first_name, last_name, email, psw) VALUES (%s, %s, %s, %s);"
+        args = (values[0], values[1], values[2], values[3])
+
+        try:
+            cursor.execute(query, args)
+
+        except mysql.connector.errors.IntegrityError:
+            return get_value(DatabaseErrors.EMAIL_ALREADY_EXIST)
+
+        except mysql.connector.errors.OperationalError:
+            return get_value(DatabaseErrors.CONNECTION_LOST)
+
+        connection.commit()
+
+    @staticmethod
+    def add_customer(cursor, connection, customer_email):
+        try:
+            cursor.execute(f"SELECT id FROM person WHERE email = '{customer_email}'")
+            id_ = cursor.fetchone()
+
+            cursor.execute(f"INSERT INTO customer (person_id) VALUES ({id_[0]});")
+
+        except mysql.connector.OperationalError:
+            return get_value(DatabaseErrors.CONNECTION_LOST)
+
+        connection.commit()
+
+    @staticmethod
     def get_customers(cursor, limit):
         try:
             cursor.execute(f'''SELECT customer.id, first_name, last_name, email, psw
@@ -72,6 +102,19 @@ class Database:
                                ON customer.person_id = person.id LIMIT {limit}
                           ''')
             return cursor.fetchall()
+
+        except mysql.connector.errors.OperationalError:
+            return get_value(DatabaseErrors.CONNECTION_LOST)
+
+    @staticmethod
+    def get_customer_info(cursor, email):
+        try:
+            cursor.execute(f"""SELECT email, psw, first_name
+                               FROM ecommerce.customer JOIN person ON customer.person_id = person.id
+                               WHERE email = '{email}';
+                           """)
+
+            return cursor.fetchone()
 
         except mysql.connector.errors.OperationalError:
             return get_value(DatabaseErrors.CONNECTION_LOST)
