@@ -1,6 +1,8 @@
 from database import database as db
-from utilities.menu import *
+from menu.general_menu import general_menu
 from utilities.utils import handle_db_conn_errors
+
+info = ['localhost', 'root', 'mySQLroot45.&ciao#.', 'ecommerce']
 
 
 if __name__ == '__main__':
