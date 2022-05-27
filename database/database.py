@@ -67,8 +67,8 @@ class Database:
 
     @staticmethod
     def add_person(cursor, values, connection):
-        query = "INSERT INTO person (first_name, last_name, email, psw) VALUES (%s, %s, %s, %s);"
-        args = (values[0], values[1], values[2], values[3])
+        query = "INSERT INTO person (first_name, last_name, email, psw, money) VALUES (%s, %s, %s, %s, %s);"
+        args = (values[0], values[1], values[2], values[3], f'{values[4]}')
 
         try:
             cursor.execute(query, args)
@@ -97,7 +97,7 @@ class Database:
     @staticmethod
     def get_customers(cursor, limit):
         try:
-            cursor.execute(f'''SELECT customer.id, first_name, last_name, email, psw
+            cursor.execute(f'''SELECT customer.id, first_name, last_name, email, psw, money
                                FROM customer JOIN person
                                ON customer.person_id = person.id LIMIT {limit}
                           ''')
@@ -109,7 +109,7 @@ class Database:
     @staticmethod
     def get_customer_info(cursor, email):
         try:
-            cursor.execute(f"""SELECT email, psw, first_name
+            cursor.execute(f"""SELECT email, psw, first_name, last_name, person.id, money
                                FROM ecommerce.customer JOIN person ON customer.person_id = person.id
                                WHERE email = '{email}';
                            """)
@@ -141,6 +141,15 @@ class Database:
             return get_value(DatabaseErrors.CONNECTION_LOST)
 
     @staticmethod
+    def get_product_bought(cursor, prod_name):
+        try:
+            cursor.execute(f"SELECT * FROM product WHERE product.product_name LIKE '{prod_name}';")
+            return cursor.fetchone()
+
+        except mysql.connector.errors.OperationalError:
+            return get_value(DatabaseErrors.CONNECTION_LOST)
+
+    @staticmethod
     def get_product_searched(cursor, prod_name, limit):
         try:
             cursor.execute(f"SELECT * FROM product WHERE product.product_name LIKE '%{prod_name}%' LIMIT {limit}")
@@ -156,6 +165,18 @@ class Database:
 
         except mysql.connector.errors.OperationalError:
             return get_value(DatabaseErrors.CONNECTION_LOST)
+
+        except mysql.connector.errors.InterfaceError:
+            return get_value(DatabaseErrors.CONNECTION_LOST)
+
+        connection.commit()
+
+    @staticmethod
+    def rmv_qnt_product(cursor, connection, prod_name):
+        try:
+            product = Database.get_product_bought(cursor, prod_name)
+
+            cursor.execute(f"UPDATE product SET qnt = {product[3]} WHERE id = {product[0]};")
 
         except mysql.connector.errors.InterfaceError:
             return get_value(DatabaseErrors.CONNECTION_LOST)
@@ -183,10 +204,21 @@ class Database:
     @staticmethod
     def get_customer_searched(cursor, customer_name, limit):
         try:
-            cursor.execute(f"""SELECT person.id, first_name, last_name, email, psw
+            cursor.execute(f"""SELECT person.id, first_name, last_name, email, psw, money
                                FROM person JOIN customer ON person.id = customer.person_id
                                WHERE person.first_name LIKE '%{customer_name}%' LIMIT {limit}""")
             return cursor.fetchall()
 
         except mysql.connector.errors.OperationalError:
             return get_value(DatabaseErrors.CONNECTION_LOST)
+
+    @staticmethod
+    def customer_add_money(cursor, connection, credit, person_id):
+        try:
+            cursor.execute(f"UPDATE person SET person.money = {credit} WHERE person.id = {person_id}")
+
+        except mysql.connector.errors.OperationalError:
+            return False
+
+        connection.commit()
+        return True

@@ -7,7 +7,8 @@ CREATE TABLE person (
     first_name VARCHAR(20) NOT NULL,
     last_name VARCHAR(20) NOT NULL,
     email VARCHAR(30) NOT NULL UNIQUE,
-    psw VARCHAR(32) NOT NULL
+    psw VARCHAR(32) NOT NULL,
+    money FLOAT
 );
 
 CREATE TABLE customer (
@@ -49,5 +50,5 @@ CREATE TABLE administrator (
 );
 
 -- first insert the person and after reference the person to the administrator
-INSERT INTO person(first_name, last_name, email, psw) VALUES ("root", "root", "root@gmail.com", "root2580");
+INSERT INTO person(first_name, last_name, email, psw, money) VALUES ("root", "root", "root@gmail.com", "root2580", 100);
 INSERT INTO administrator(person_id) VALUES (1);

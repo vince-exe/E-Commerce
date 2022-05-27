@@ -1,4 +1,5 @@
 from utilities.enums import *
+from person.person import Person
 
 option_list = ['y', 'yes', 'Y', 'YES', 'YeS', 'YEs']
 
@@ -19,6 +20,14 @@ def get_name_surname(max_, string):
     return name
 
 
+def get_money(min_, max_):
+    money = -1.00
+    while money < min_ or money > max_:
+        money = float(input("\nInsert the amount of money: "))
+
+    return money
+
+
 def get_info_admin(database, cursor):
     log_credentials = (get_email(get_value(CredentialsOptions.EMAIL_MAX_LEN)),
                        get_psw(get_value(CredentialsOptions.PSW_MAX_LEN)))
@@ -33,7 +42,8 @@ def get_info_customer():
                        get_name_surname(get_value(CredentialsOptions.EMAIL_MAX_LEN), "First Name: "),
                        get_name_surname(get_value(CredentialsOptions.EMAIL_MAX_LEN), "Last Name: "),
                        get_email(get_value(CredentialsOptions.EMAIL_MAX_LEN)),
-                       get_psw(get_value(CredentialsOptions.PSW_MAX_LEN))
+                       get_psw(get_value(CredentialsOptions.PSW_MAX_LEN)),
+                       get_money(get_value(MoneyOptions.MIN), get_value(MoneyOptions.MAX))
                        ]
 
     return log_credentials
@@ -77,7 +87,7 @@ def handle_sign_in_customer(login_cred, database, cursor):
         print(f"\nIt's nice to see you again {db_cred[2]}")
 
         input("\nPress any key to continue...")
-        return True
+        return Person(db_cred[2], db_cred[3], db_cred[0], db_cred[1], db_cred[4], db_cred[5])
 
     print("\nSomething went wrong with username and password")
 
@@ -217,7 +227,8 @@ Id: {customer[0]}\n
 First Name: {customer[1]}\n
 Last Name: {customer[2]}\n
 Email: {customer[3]}\n
-Password: {customer[4]}
+Password: {customer[4]}\n
+Money: {customer[5]}
 * - - - - - - - - - - - - - *
             ''')
 
@@ -348,3 +359,25 @@ def handle_add_customer(person):
 
         input("\nPress any key to continue...")
         return False
+
+
+def handle_product_bought(product, money):
+    if product is None:
+        print("\nThe product doesn't exist")
+
+        input("\nThe application has lost the connection with the server")
+        return False
+
+    elif product == get_value(DatabaseErrors.CONNECTION_LOST):
+        print("\nThe application has lost the connectio with the server")
+
+        input("\nPress any key to exit...")
+        return False
+
+    elif money < product[2]:
+        print("\nYou don't have enough money")
+
+        input("\nPress any key to continue...")
+        return False
+
+    return True

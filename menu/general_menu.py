@@ -2,6 +2,8 @@ from utilities.utils import *
 from utilities.enums import *
 
 from menu.admin_menu import admin_menu
+from menu.super_root_menu import super_root_menu
+from menu.customer_menu import customer_menu
 
 
 def initial_admin_menu(database, cursor, connection):
@@ -39,8 +41,9 @@ def initial_customer_menu(database, cursor, connection):
                                "\n\nInsert option (1 / 3): "))
 
             if option == get_value(GeneralOptions.SIGN_IN):
-                if handle_sign_in_customer(get_psw_email_customer(), database, cursor):
-                    customer_menu()
+                person = handle_sign_in_customer(get_psw_email_customer(), database, cursor)
+                if person:
+                    customer_menu(cursor, database, connection, person)
 
             elif option == get_value(GeneralOptions.SIGN_UP):
                 info_customer = get_info_customer()

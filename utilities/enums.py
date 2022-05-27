@@ -72,3 +72,8 @@ class CustomerOptions(enum.Enum):
     DELETE_ORDERS = 7
     SEARCH_ORDERS = 8
     EXIT = 9
+
+
+class MoneyOptions(enum.Enum):
+    MIN = 5
+    MAX = 100000000
