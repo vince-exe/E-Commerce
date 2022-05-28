@@ -1,5 +1,3 @@
-import mysql.connector.errors
-
 from utilities.utils import *
 from utilities.enums import *
 
@@ -10,24 +8,38 @@ from menu.admin_menu import view_product_searched
 def buy_product(database, prod_name, cursor, person, connection):
     product = database.get_product_bought(cursor, prod_name)
 
-    if not handle_product_bought(product, prod_name, person.get_money()):
+    if not handle_product_bought(product, person.get_money()):
         return
 
-    if database.rmv_qnt_product(cursor, connection, prod_name) == get_value(DatabaseErrors.CONNECTION_LOST):
+    check = database.rmv_qnt_product(cursor, connection, prod_name)
+
+    if check == get_value(DatabaseErrors.CONNECTION_LOST):
         print("\nThe application has lost the connection with the server")
 
         input("\nPress any key to continue...")
         return
 
-    else:
-        person.remove_money(product[2])
+    elif check == get_value(DatabaseErrors.OUT_OF_STOCK):
+        print("\nthe product is out of stock")
+
+        input("\nPress any key to continue...")
         return
+
+    person.remove_money(product[2])
+    database.customer_change_money(cursor, connection, person.get_money(), person.get_id())
+
+    customer_id = database.get_customer_id(cursor, person.get_id())
+    database.create_my_order(cursor, connection, customer_id[0])
+    database.create_prod_ordered(cursor, connection, product[0], customer_id[0])
+
+    print(f"\nSuccessfully ordered the product: {product[1]}")
+    input("\nPress any key to continue...")
 
 
 def add_money(database, cursor, connection, person, credit):
     person.add_money(credit)
 
-    if database.customer_add_money(cursor, connection, person.get_money(), person.get_id()):
+    if database.customer_change_money(cursor, connection, person.get_money(), person.get_id()):
         print(f"\nSuccessfully added {credit} to the account")
 
         input("\nPress any key to continue...")
@@ -66,7 +78,7 @@ def customer_menu(cursor, database, connection, person):
                 buy_product(database, prod_name, cursor, person, connection)
 
             elif option_ == get_value(CustomerOptions.CHECK_CREDIT):
-                print(f"\nYour credit amounts to: {person.get_money()}")
+                print(f"\nYour credit amounts to: {round(person.get_money(), 2)}")
                 input("\nPress any key to continue...")
 
             elif option_ == get_value(CustomerOptions.ADD_CREDIT):

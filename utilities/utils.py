@@ -1,7 +1,25 @@
 from utilities.enums import *
 from person.person import Person
+from datetime import date
 
 option_list = ['y', 'yes', 'Y', 'YES', 'YeS', 'YEs']
+
+
+def get_date():
+    year = date.today().year
+
+    month = int(date.today().month)
+    tmp_month = month
+
+    if month <= 9:
+        month = f'0{tmp_month}'
+    else:
+        tmp_month = str(month)
+
+    day = date.today().day
+
+    complete_date = f'{year}/{month}/{day}'
+    return complete_date
 
 
 def clear_screen():
@@ -209,7 +227,17 @@ def check_answer(option):
 
 def print_products(products_list):
     for product in products_list:
-        print(f'''
+        if product[3] <= 0:
+            print(f'''
+* - - - - - - - - - - - - - *
+Id: {product[0]}\n
+Name: {product[1]}\n
+Price: {product[2]}\n
+Quantity: Out of stock
+* - - - - - - - - - - - - - *
+            ''')
+        else:
+            print(f'''
 * - - - - - - - - - - - - - *
 Id: {product[0]}\n
 Name: {product[1]}\n
@@ -365,7 +393,7 @@ def handle_product_bought(product, money):
     if product is None:
         print("\nThe product doesn't exist")
 
-        input("\nThe application has lost the connection with the server")
+        input("\nPress any key to continue...")
         return False
 
     elif product == get_value(DatabaseErrors.CONNECTION_LOST):

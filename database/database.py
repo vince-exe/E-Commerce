@@ -176,7 +176,10 @@ class Database:
         try:
             product = Database.get_product_bought(cursor, prod_name)
 
-            cursor.execute(f"UPDATE product SET qnt = {product[3]} WHERE id = {product[0]};")
+            if product[3] <= 0:  # if the quantity is equal to 0
+                return get_value(DatabaseErrors.OUT_OF_STOCK)
+
+            cursor.execute(f"UPDATE product SET qnt = {product[3] - 1} WHERE id = {product[0]};")
 
         except mysql.connector.errors.InterfaceError:
             return get_value(DatabaseErrors.CONNECTION_LOST)
@@ -213,7 +216,7 @@ class Database:
             return get_value(DatabaseErrors.CONNECTION_LOST)
 
     @staticmethod
-    def customer_add_money(cursor, connection, credit, person_id):
+    def customer_change_money(cursor, connection, credit, person_id):
         try:
             cursor.execute(f"UPDATE person SET person.money = {credit} WHERE person.id = {person_id}")
 
@@ -222,3 +225,48 @@ class Database:
 
         connection.commit()
         return True
+
+    @staticmethod
+    def create_my_order(cursor, connection, customer_id):
+        try:
+            cursor.execute(f"INSERT INTO my_order (customer_id) VALUES ({customer_id});")
+
+        except mysql.connector.errors.OperationalError:
+            return get_value(DatabaseErrors.CONNECTION_LOST)
+
+        connection.commit()
+
+    @staticmethod
+    def create_prod_ordered(cursor, connection, prod_id, customer_id):
+        try:
+            order_id = Database.get_last_order(cursor, customer_id)
+            sql = "INSERT INTO product_ordered(product_id, order_id, date_) VALUES (%s, %s, %s);"
+            args = (f'{prod_id}', f'{order_id[0]}', get_date())
+
+            cursor.execute(sql, args)
+
+        except mysql.connector.errors.OperationalError:
+            return get_value(DatabaseErrors.CONNECTION_LOST)
+
+        connection.commit()
+
+    @staticmethod
+    def get_customer_id(cursor, person_id):
+        try:
+            cursor.execute(f"""SELECT customer.id FROM customer
+                               JOIN person ON person.id = customer.person_id
+                               WHERE person.id = {person_id}
+                           """)
+            return cursor.fetchone()
+
+        except mysql.connector.errors.OperationalError:
+            return get_value(DatabaseErrors.CONNECTION_LOST)
+
+    @staticmethod
+    def get_last_order(cursor, customer_id):
+        try:
+            cursor.execute(f"SELECT id FROM my_order WHERE my_order.customer_id = {customer_id} ORDER BY id DESC LIMIT 1")
+            return cursor.fetchone()
+
+        except mysql.connector.errors.OperationalError:
+            return get_value(DatabaseErrors.CONNECTION_LOST)

@@ -48,6 +48,7 @@ class DatabaseErrors(enum.Enum):
     DB_EXCEPTION = -3
     DATA_ERROR = -4
     EMAIL_ALREADY_EXIST = -5
+    OUT_OF_STOCK = -6
 
 
 class GeneralOptions(enum.Enum):
