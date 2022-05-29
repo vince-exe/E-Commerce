@@ -60,9 +60,6 @@ def view_products_menu(cursor, database):
 def view_product_searched(database, cursor, prod_name):
     limit = 5
 
-    if not handle_product_searched(database.get_product_searched(cursor, prod_name, limit), prod_name):
-        return
-
     while True:
         try:
             option = int(input("\n1)View Products (5 at time)"
@@ -70,8 +67,11 @@ def view_product_searched(database, cursor, prod_name):
                                "\n\nInsert option (1 / 2): "))
 
             if option == 1:
-                print_products(database.get_product_searched(cursor, prod_name, limit))
-                limit += 5
+                if not handle_product_searched(database.get_product_searched(cursor, prod_name, limit), prod_name):
+                    return
+                else:
+                    print_products(database.get_product_searched(cursor, prod_name, limit))
+                    limit += 5
 
             elif option == 2:
                 return
@@ -139,7 +139,6 @@ def delete_customer_menu(database, connection, cursor):
 
                 deleted_customer = database.delete_customer(cursor, connection, id_)
                 if handle_rmv_errors(deleted_customer):
-
                     database.delete_person(cursor, connection, id_)
                     print(f"\nSuccessfully removed the customer with id: {id_}")
 

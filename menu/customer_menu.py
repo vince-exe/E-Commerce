@@ -52,6 +52,42 @@ def add_money(database, cursor, connection, person, credit):
     return
 
 
+def view_orders(database, cursor, person):
+    limit = 5
+    customer_id = database.get_customer_id(cursor, person.get_id())
+
+    while True:
+        try:
+            option = int(input("\n1)View Orders (5 at time)"
+                               "\n2)Exit"
+                               "\n\nInsert option (1 / 2): "))
+
+            if option == 1:
+                try:
+                    order = database.get_orders(cursor, customer_id[0], person.get_id(), limit)
+
+                    if handle_view_orders(order):
+                        print_orders(order)
+                        limit += 5
+                    else:
+                        return
+
+                except TypeError:
+                    print("\nThe application has lost the connection with the server")
+
+                    input("\nPress any key to continue...")
+                    return
+
+            elif option == 2:
+                return
+
+            else:
+                print(f'\n{option} is not an option')
+
+        except ValueError:
+            print("\nOption must be a number")
+
+
 def customer_menu(cursor, database, connection, person):
     while True:
         try:
@@ -86,7 +122,7 @@ def customer_menu(cursor, database, connection, person):
                 add_money(database, cursor, connection, person, credit)
 
             elif option_ == get_value(CustomerOptions.VIEW_ORDERS):
-                pass
+                view_orders(database, cursor, person)
 
             elif option_ == get_value(CustomerOptions.DELETE_ORDERS):
                 pass

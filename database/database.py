@@ -265,8 +265,33 @@ class Database:
     @staticmethod
     def get_last_order(cursor, customer_id):
         try:
-            cursor.execute(f"SELECT id FROM my_order WHERE my_order.customer_id = {customer_id} ORDER BY id DESC LIMIT 1")
+            cursor.execute(
+                f"SELECT id FROM my_order WHERE my_order.customer_id = {customer_id} ORDER BY id DESC LIMIT 1")
             return cursor.fetchone()
 
         except mysql.connector.errors.OperationalError:
+            return get_value(DatabaseErrors.CONNECTION_LOST)
+
+    @staticmethod
+    def get_orders(cursor, customer_id, person_id, limit):
+        try:
+            cursor.execute(f'''SELECT person.first_name,
+                                      person.last_name,
+                                      product.product_name,
+                                      product_ordered.date_,
+                                      my_order.id, product.id
+                                      
+                               FROM my_order
+                               JOIN customer ON my_order.customer_id = {customer_id}
+                               JOIN person ON person.id = {person_id}
+                               JOIN product_ordered ON product_ordered.order_id = my_order.id
+                               JOIN product ON product.id = product_ordered.product_id
+                               LIMIT {limit}
+                           ''')
+            return cursor.fetchall()
+
+        except mysql.connector.errors.OperationalError:
+            return get_value(DatabaseErrors.CONNECTION_LOST)
+
+        except TypeError:
             return get_value(DatabaseErrors.CONNECTION_LOST)

@@ -15,8 +15,16 @@ def get_date():
         month = f'0{tmp_month}'
     else:
         tmp_month = str(month)
+        month = tmp_month
 
-    day = date.today().day
+    day = int(date.today().day)
+    tmp_day = day
+
+    if day <= 9:
+        day = f'0{tmp_day}'
+    else:
+        tmp_day = str(day)
+        day = tmp_day
 
     complete_date = f'{year}/{month}/{day}'
     return complete_date
@@ -261,6 +269,20 @@ Money: {customer[5]}
             ''')
 
 
+def print_orders(orders_list):
+    for order in orders_list:
+        print(f'''
+* - - - - - - - - - - - - - *
+First Name: {order[0]}\n
+Last Name: {order[1]}\n
+Product Name: {order[2]}\n
+Date: {order[3]}\n
+Order Id: {order[4]}\n
+Product Id: {order[5]}
+* - - - - - - - - - - - - - *
+              ''')
+
+
 def handle_product_errors(error, prod_info):
     if error == get_value(DatabaseErrors.CONNECTION_LOST):
         print(f"\nCan't add the product: {prod_info[0]} the application lost the connection with the server :(")
@@ -404,6 +426,22 @@ def handle_product_bought(product, money):
 
     elif money < product[2]:
         print("\nYou don't have enough money")
+
+        input("\nPress any key to continue...")
+        return False
+
+    return True
+
+
+def handle_view_orders(order):
+    if order == -1:
+        print("\nYou don't have orders")
+
+        input("\nPress any key to continue...")
+        return False
+
+    elif order == get_value(DatabaseErrors.CONNECTION_LOST):
+        print("\nThe application has lost the connection with the server")
 
         input("\nPress any key to continue...")
         return False
