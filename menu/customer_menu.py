@@ -54,7 +54,13 @@ def add_money(database, cursor, connection, person, credit):
 
 def view_orders(database, cursor, person):
     limit = 5
+
     customer_id = database.get_customer_id(cursor, person.get_id())
+    if customer_id == get_value(DatabaseErrors.CONNECTION_LOST):
+        print("\nThe application has lost the connection with the server")
+
+        input("\nPress any key to continue...")
+        return
 
     while True:
         try:
@@ -64,7 +70,7 @@ def view_orders(database, cursor, person):
 
             if option == 1:
                 try:
-                    order = database.get_orders(cursor, customer_id[0], person.get_id(), limit)
+                    order = database.get_orders(cursor, customer_id[0], limit)
 
                     if handle_view_orders(order):
                         print_orders(order)
@@ -86,6 +92,53 @@ def view_orders(database, cursor, person):
 
         except ValueError:
             print("\nOption must be a number")
+
+
+def search_order_menu(database, cursor, prod_name, person):
+    customer_id = database.get_customer_id(cursor, person.get_id())
+
+    if customer_id == get_value(DatabaseErrors.CONNECTION_LOST):
+        print("\nThe application has lost the connection with the server")
+
+        input("\nPress an key to continue...")
+        return
+
+    limit = 5
+    while True:
+        try:
+            option = int(input("\n1)View Orders"
+                               "\n2)Exit"
+                               "\n\nInsert an option (1 / 2): "))
+
+            if option == 1:
+                orders = database.get_orders_searched(cursor, customer_id[0], prod_name, limit)
+
+                if handle_search_orders(orders, prod_name):
+                    print_orders(orders)
+                    limit += 5
+                else:
+                    return
+
+            elif option == 2:
+                return
+
+            else:
+                print(f'\n{option} is not a valid option')
+
+        except ValueError:
+            print("\nOption must be a number!!")
+
+
+def delete_customer_order(database, cursor, connection):
+    id_ = get_order_id()
+
+    if database.delete_order(cursor, connection, id_) == get_value(DatabaseErrors.CONNECTION_LOST):
+        print("\nThe application has lost the connection with the server")
+
+        input("\nPress any key to continue...")
+        return
+
+    print(f"\nSuccessfully removed the order with id: {id_}")
 
 
 def customer_menu(cursor, database, connection, person):
@@ -125,10 +178,12 @@ def customer_menu(cursor, database, connection, person):
                 view_orders(database, cursor, person)
 
             elif option_ == get_value(CustomerOptions.DELETE_ORDERS):
-                pass
+                print("\nNote: the application doesn't check if the order exist, so use the correct id")
+                delete_customer_order(database, cursor, connection)
 
             elif option_ == get_value(CustomerOptions.SEARCH_ORDERS):
-                pass
+                product_name = input("\nInsert the product name: ")
+                search_order_menu(database, cursor, product_name, person)
 
             elif option_ == get_value(CustomerOptions.EXIT):
                 return

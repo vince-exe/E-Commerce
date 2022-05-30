@@ -273,20 +273,22 @@ class Database:
             return get_value(DatabaseErrors.CONNECTION_LOST)
 
     @staticmethod
-    def get_orders(cursor, customer_id, person_id, limit):
+    def get_orders(cursor, customer_id, limit):
         try:
             cursor.execute(f'''SELECT person.first_name,
-                                      person.last_name,
-                                      product.product_name,
+	                                  person.last_name,
+	                                  product.product_name,
                                       product_ordered.date_,
-                                      my_order.id, product.id
+	                                  my_order.id, product.id
                                       
                                FROM my_order
-                               JOIN customer ON my_order.customer_id = {customer_id}
-                               JOIN person ON person.id = {person_id}
-                               JOIN product_ordered ON product_ordered.order_id = my_order.id
-                               JOIN product ON product.id = product_ordered.product_id
-                               LIMIT {limit}
+	                                JOIN customer ON my_order.customer_id = customer.id
+                                    JOIN person ON person.id = customer.person_id
+	                                JOIN product_ordered ON product_ordered.order_id = my_order.id
+                                    JOIN product ON product.id = product_ordered.product_id
+                                    
+                                WHERE customer_id = {customer_id}
+                                LIMIT {limit}
                            ''')
             return cursor.fetchall()
 
@@ -294,4 +296,43 @@ class Database:
             return get_value(DatabaseErrors.CONNECTION_LOST)
 
         except TypeError:
+            return get_value(DatabaseErrors.CONNECTION_LOST)
+
+    @staticmethod
+    def get_orders_searched(cursor, customer_id, prod_name, limit):
+        try:
+            cursor.execute(f'''SELECT person.first_name,
+	                                  person.last_name,
+	                                  product.product_name,
+                                      product_ordered.date_,
+	                                  my_order.id,
+	                                  product.id
+                                      
+                               FROM my_order
+	                               JOIN customer ON my_order.customer_id = customer.id
+                                   JOIN person ON person.id = customer.person_id
+	                               JOIN product_ordered ON product_ordered.order_id = my_order.id
+                                   JOIN product ON product.id = product_ordered.product_id
+                                   
+                               WHERE customer_id = {customer_id} AND product.product_name LIKE "%{prod_name}%"
+                               LIMIT {limit};''')
+
+            return cursor.fetchall()
+
+        except mysql.connector.errors.OperationalError:
+            return get_value(DatabaseErrors.CONNECTION_LOST)
+
+    @staticmethod
+    def delete_order(cursor, connection, order_id):
+        try:
+            cursor.execute('''SET FOREIGN_KEY_CHECKS = 0;''')
+            connection.commit()
+
+            cursor.execute(f'''DELETE FROM my_order WHERE my_order.id = {order_id};''')
+            connection.commit()
+
+            cursor.execute(f'''DELETE FROM product_ordered WHERE product_ordered.order_id = {order_id};''')
+            connection.commit()
+
+        except mysql.connector.errors.OperationalError:
             return get_value(DatabaseErrors.CONNECTION_LOST)

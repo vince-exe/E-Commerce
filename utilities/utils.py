@@ -216,6 +216,18 @@ def get_price(min_, max_):
     return price
 
 
+def get_order_id():
+    id_ = -1
+    while id_ < 0:
+        try:
+            id_ = int(input("\nInsert the id of the order: "))
+
+        except ValueError:
+            print("\nId must be a number")
+
+    return id_
+
+
 def get_product_info():
     info = [
             input("\nInsert the name: "),
@@ -440,7 +452,35 @@ def handle_view_orders(order):
         input("\nPress any key to continue...")
         return False
 
+    elif not len(order):
+        print("\nYou don't have any orders")
+
+        input("\nPress any key to continue...")
+        return False
+
     elif order == get_value(DatabaseErrors.CONNECTION_LOST):
+        print("\nThe application has lost the connection with the server")
+
+        input("\nPress any key to continue...")
+        return False
+
+    return True
+
+
+def handle_search_orders(orders, order_name):
+    if orders == -1:
+        print("\nThe application has lost the connection with the server")
+
+        input("\nPress any key to continue...")
+        return False
+
+    elif not len(orders):
+        print(f"\nThere isn't any orders with the product: {order_name}")
+
+        input("\nPress any key to continue...")
+        return False
+
+    elif orders == get_value(DatabaseErrors.CONNECTION_LOST):
         print("\nThe application has lost the connection with the server")
 
         input("\nPress any key to continue...")
