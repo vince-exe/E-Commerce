@@ -15,12 +15,25 @@ class AdminOptions(enum.Enum):
     VIEW_CUSTOMERS = 1
     VIEW_PRODUCTS = 2
     ADD_PRODUCT = 3
-    SEARCH_PRODUCT = 4
-    DELETE_PRODUCT = 5
-    DELETE_CUSTOMER = 6
-    SEARCH_CUSTOMER = 7
-    EXIT = 8
+    MODIFY_PRODUCT = 4
+    SEARCH_PRODUCT = 5
+    DELETE_PRODUCT = 6
+    DELETE_CUSTOMER = 7
+    SEARCH_CUSTOMER = 8
+    EXIT = 9
     EXIT_LOG = 2
+
+
+class CustomerOptions(enum.Enum):
+    VIEW_PRODUCTS = 1
+    SEARCH_PRODUCT = 2
+    BUY_PRODUCT = 3
+    CHECK_CREDIT = 4
+    ADD_CREDIT = 5
+    VIEW_ORDERS = 6
+    DELETE_ORDERS = 7
+    SEARCH_ORDERS = 8
+    EXIT = 9
 
 
 class SuperRootOptions(enum.Enum):
@@ -63,18 +76,10 @@ class GeneralMenuOptions(enum.Enum):
     EXIT = 3
 
 
-class CustomerOptions(enum.Enum):
-    VIEW_PRODUCTS = 1
-    SEARCH_PRODUCT = 2
-    BUY_PRODUCT = 3
-    CHECK_CREDIT = 4
-    ADD_CREDIT = 5
-    VIEW_ORDERS = 6
-    DELETE_ORDERS = 7
-    SEARCH_ORDERS = 8
-    EXIT = 9
-
-
 class MoneyOptions(enum.Enum):
     MIN = 5
     MAX = 100000000
+
+
+def get_value(enum_value):
+    return enum_value.value

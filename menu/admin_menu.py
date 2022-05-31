@@ -1,5 +1,5 @@
 from utilities.utils import *
-from utilities.enums import *
+from errors.handle_errors import *
 
 
 def view_customers_menu(cursor, database):
@@ -67,7 +67,7 @@ def view_product_searched(database, cursor, prod_name):
                                "\n\nInsert option (1 / 2): "))
 
             if option == 1:
-                if not handle_product_searched(database.get_product_searched(cursor, prod_name, limit), prod_name):
+                if not prod_searched_errors(database.get_product_searched(cursor, prod_name, limit), prod_name):
                     return
                 else:
                     print_products(database.get_product_searched(cursor, prod_name, limit))
@@ -88,14 +88,11 @@ def delete_product_menu(database, cursor, connection):
         try:
             option = int(input("\n1)Delete Product"
                                "\n2)Exit"
-                               "\n\nNote: The application doesn't check if the removed product was in the database,"
-                               "so delete using the correct id"
                                "\n\nInsert option (1 /2): "
                                )
                          )
 
             if option == 1:
-                id_ = 0
                 while True:
                     try:
                         id_ = int(input("\nInsert the product id: "))
@@ -104,7 +101,7 @@ def delete_product_menu(database, cursor, connection):
                         print("\nId must be a number")
 
                 del_prod = database.delete_product(cursor, connection, id_)
-                if handle_rmv_errors(del_prod):
+                if rmv_errors(del_prod):
                     print(f"\nSuccessfully removed the product with id: {id_}")
 
             elif option == 2:
@@ -122,14 +119,11 @@ def delete_customer_menu(database, connection, cursor):
         try:
             option = int(input("\n1)Delete Customer"
                                "\n2)Exit"
-                               "\n\nNote: the application doesn't check if the customer was in the database,"
-                               "so delete the customer using the correct id"
                                "\n\nInsert option (1 / 2): "
                                )
                          )
 
             if option == 1:
-                id_ = 0
                 while True:
                     try:
                         id_ = int(input("\nInsert the customer id: "))
@@ -138,7 +132,7 @@ def delete_customer_menu(database, connection, cursor):
                         print("\nId must be a number!!")
 
                 deleted_customer = database.delete_customer(cursor, connection, id_)
-                if handle_rmv_errors(deleted_customer):
+                if rmv_errors(deleted_customer):
                     database.delete_person(cursor, connection, id_)
                     print(f"\nSuccessfully removed the customer with id: {id_}")
 
@@ -155,7 +149,7 @@ def delete_customer_menu(database, connection, cursor):
 def search_customer_menu(database, cursor, customer_name):
     limit = 5
 
-    if not handle_customer_searched_errors(database.get_customer_searched(cursor, customer_name, limit), customer_name):
+    if not customer_searched_errors(database.get_customer_searched(cursor, customer_name, limit), customer_name):
         return
 
     while True:
@@ -178,45 +172,81 @@ def search_customer_menu(database, cursor, customer_name):
             print("\nOption must be a number!!")
 
 
+def modify_product(database, connection, cursor):
+    prod_id = get_id_product()
+
+    while True:
+        try:
+            option = int(input("\n1)Change Name"
+                               "\n2)Change Quantity"
+                               "\n3)Change Price"
+                               "\n4)Exit"
+                               "\n\nInsert option (1 / 4): "))
+
+            if option == 1:
+                database.update_name_product(cursor, connection, prod_id, input("\nInsert the new name: "))
+
+            elif option == 2:
+                database.update_qnt_product(cursor, connection, prod_id, get_prod_qnt())
+
+            elif option == 3:
+                database.update_price_product(cursor, connection, prod_id, get_prod_price(get_value(PriceOptions.MAX)))
+
+            elif option == 4:
+                return
+
+            else:
+                print(f'\n{option} is not an option')
+
+        except ValueError:
+            print("\nOption must be a number!!")
+
+
 def admin_menu(database, cursor, connection):
     while True:
         try:
             option = int(input(("\n1)View All Customers"
                                 "\n2)View All Products"
                                 "\n3)Add Product"
-                                "\n4)Search Product (info)"
-                                "\n5)Delete Product"
-                                "\n6)Delete Customer"
-                                "\n7)Search Customer"
-                                "\n8)Exit"
-                                "\n\nInsert option (1 / 8): "
+                                "\n4)Modify Product"
+                                "\n5)Search Product (info)"
+                                "\n6)Delete Product"
+                                "\n7)Delete Customer"
+                                "\n8)Search Customer"
+                                "\n9)Exit"
+                                "\n\nInsert option (1 / 9): "
                                 )))
 
-            if option == get_value(AdminOptions.VIEW_CUSTOMERS):  # view all the customers
+            if option == get_value(AdminOptions.VIEW_CUSTOMERS):  # View Customers
                 view_customers_menu(cursor, database)
 
-            elif option == get_value(AdminOptions.VIEW_PRODUCTS):  # view all the products
+            elif option == get_value(AdminOptions.VIEW_PRODUCTS):  # View Products
                 view_products_menu(cursor, database)
 
-            elif option == get_value(AdminOptions.ADD_PRODUCT):  # add a product
+            elif option == get_value(AdminOptions.ADD_PRODUCT):  # Add Product
                 prod_info = get_product_info()
-                handle_product_errors(database.add_product(cursor, prod_info, connection), prod_info)
+                add_prod_errors(database.add_product(cursor, prod_info, connection), prod_info)
 
-            elif option == get_value(AdminOptions.SEARCH_PRODUCT):  # search a product
+            elif option == get_value(AdminOptions.MODIFY_PRODUCT):  # Modify Product
+                modify_product(database, connection, cursor)
+
+            elif option == get_value(AdminOptions.SEARCH_PRODUCT):  # Search Product
                 prod_name = input("\nInsert the name of the product: ")
                 view_product_searched(database, cursor, prod_name)
 
-            elif option == get_value(AdminOptions.DELETE_PRODUCT):  # delete a product
+            elif option == get_value(AdminOptions.DELETE_PRODUCT):  # Delete Product
+                print("\n\nNote: The application doesn't check if you are using the correct id")
                 delete_product_menu(database, cursor, connection)
 
-            elif option == get_value(AdminOptions.DELETE_CUSTOMER):  # delete a customer
+            elif option == get_value(AdminOptions.DELETE_CUSTOMER):  # Delete Customer
+                print("\n\nNote: The application doesn't check if you are using the correct id")
                 delete_customer_menu(database, connection, cursor)
 
-            elif option == get_value(AdminOptions.SEARCH_CUSTOMER):  # search a customer
+            elif option == get_value(AdminOptions.SEARCH_CUSTOMER):  # Search Customer
                 customer_name = input("\nInsert the customer name: ")
                 search_customer_menu(database, cursor, customer_name)
 
-            elif option == get_value(AdminOptions.EXIT):  # exit
+            elif option == get_value(AdminOptions.EXIT):  # Exit
                 return
 
             else:

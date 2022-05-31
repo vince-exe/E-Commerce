@@ -1,5 +1,6 @@
 from utilities.utils import *
-from utilities.enums import *
+
+from errors.handle_errors import *
 
 from menu.admin_menu import view_products_menu
 from menu.admin_menu import view_product_searched
@@ -8,7 +9,7 @@ from menu.admin_menu import view_product_searched
 def buy_product(database, prod_name, cursor, person, connection):
     product = database.get_product_bought(cursor, prod_name)
 
-    if not handle_product_bought(product, person.get_money()):
+    if not prod_bought_errors(product, person.get_money()):
         return
 
     check = database.rmv_qnt_product(cursor, connection, prod_name)
@@ -72,7 +73,7 @@ def view_orders(database, cursor, person):
                 try:
                     order = database.get_orders(cursor, customer_id[0], limit)
 
-                    if handle_view_orders(order):
+                    if view_orders_errors(order):
                         print_orders(order)
                         limit += 5
                     else:
@@ -113,7 +114,7 @@ def search_order_menu(database, cursor, prod_name, person):
             if option == 1:
                 orders = database.get_orders_searched(cursor, customer_id[0], prod_name, limit)
 
-                if handle_search_orders(orders, prod_name):
+                if search_orders_errors(orders, prod_name):
                     print_orders(orders)
                     limit += 5
                 else:
@@ -155,37 +156,37 @@ def customer_menu(cursor, database, connection, person):
                                 "\n9)Exit"
                                 "\n\nInsert option (1 / 9): "))
 
-            if option_ == get_value(CustomerOptions.VIEW_PRODUCTS):
+            if option_ == get_value(CustomerOptions.VIEW_PRODUCTS):  # View Orders
                 view_products_menu(cursor, database)
 
-            elif option_ == get_value(CustomerOptions.SEARCH_PRODUCT):
+            elif option_ == get_value(CustomerOptions.SEARCH_PRODUCT):  # Search Product
                 prod_name = input("\nInsert the name of the product: ")
                 view_product_searched(database, cursor, prod_name)
 
-            elif option_ == get_value(CustomerOptions.BUY_PRODUCT):
+            elif option_ == get_value(CustomerOptions.BUY_PRODUCT):  # Buy Product
                 prod_name = input("\nInsert the name of the product: ")
                 buy_product(database, prod_name, cursor, person, connection)
 
-            elif option_ == get_value(CustomerOptions.CHECK_CREDIT):
+            elif option_ == get_value(CustomerOptions.CHECK_CREDIT):  # Check Credit
                 print(f"\nYour credit amounts to: {round(person.get_money(), 2)}")
                 input("\nPress any key to continue...")
 
-            elif option_ == get_value(CustomerOptions.ADD_CREDIT):
+            elif option_ == get_value(CustomerOptions.ADD_CREDIT):  # Add Credit
                 credit = get_money(get_value(MoneyOptions.MIN), get_value(MoneyOptions.MAX))
                 add_money(database, cursor, connection, person, credit)
 
-            elif option_ == get_value(CustomerOptions.VIEW_ORDERS):
+            elif option_ == get_value(CustomerOptions.VIEW_ORDERS):  # View Orders
                 view_orders(database, cursor, person)
 
-            elif option_ == get_value(CustomerOptions.DELETE_ORDERS):
-                print("\nNote: the application doesn't check if the order exist, so use the correct id")
+            elif option_ == get_value(CustomerOptions.DELETE_ORDERS):  # Delete Orders
+                print("\nNote: the application doesn't check if you are using a correct id")
                 delete_customer_order(database, cursor, connection)
 
-            elif option_ == get_value(CustomerOptions.SEARCH_ORDERS):
+            elif option_ == get_value(CustomerOptions.SEARCH_ORDERS):  # Search Orders
                 product_name = input("\nInsert the product name: ")
                 search_order_menu(database, cursor, product_name, person)
 
-            elif option_ == get_value(CustomerOptions.EXIT):
+            elif option_ == get_value(CustomerOptions.EXIT):  # Exit
                 return
 
             else:

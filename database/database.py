@@ -336,3 +336,42 @@ class Database:
 
         except mysql.connector.errors.OperationalError:
             return get_value(DatabaseErrors.CONNECTION_LOST)
+
+    @staticmethod
+    def update_qnt_product(cursor, connection, prod_id, new_qnt):
+        try:
+            cursor.execute(f'''UPDATE product SET product.qnt = "{new_qnt}" WHERE product.id = {prod_id}''')
+
+        except mysql.connector.errors.OperationalError:
+            return get_value(DatabaseErrors.CONNECTION_LOST)
+
+        except mysql.connector.errors.DataError:
+            return get_value(DatabaseErrors.DATA_ERROR)
+
+        connection.commit()
+
+    @staticmethod
+    def update_name_product(cursor, connection, prod_id, new_name):
+        try:
+            cursor.execute(f'''UPDATE product SET product.product_name = "{new_name}" WHERE product.id = {prod_id}''')
+
+        except mysql.connector.errors.OperationalError:
+            return get_value(DatabaseErrors.CONNECTION_LOST)
+
+        except mysql.connector.errors.DataError:
+            return get_value(DatabaseErrors.DATA_ERROR)
+
+        except mysql.connector.errors.IntegrityError:
+            return get_value(DatabaseErrors.NAME_ALREADY_EXIST)
+
+        connection.commit()
+
+    @staticmethod
+    def update_price_product(cursor, connection, prod_id, new_price):
+        try:
+            cursor.execute(f'''UPDATE product SET product.price = "{new_price}" WHERE product.id = {prod_id}''')
+
+        except mysql.connector.errors.OperationalError:
+            return get_value(DatabaseErrors.CONNECTION_LOST)
+
+        connection.commit()
