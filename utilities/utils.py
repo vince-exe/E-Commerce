@@ -51,7 +51,7 @@ def get_info_admin(database, cursor):
     return signin_root_errors(log_credentials, db_credential)
 
 
-def get_info_customer():
+def get_info_person():
     log_credentials = [
                        input("\nInsert the First Name: "),
                        input("\nInsert the Last Name: "),
@@ -231,5 +231,19 @@ Product Name: {order[2]}\n
 Date: {order[3]}\n
 Order Id: {order[4]}\n
 Product Id: {order[5]}
+* - - - - - - - - - - - - - *
+              ''')
+
+
+def print_admins(admin_list):
+    for admin in admin_list:
+        print(f'''
+* - - - - - - - - - - - - - *
+Id: {admin[0]}\n
+First Name: {admin[1]}\n
+Last Name: {admin[2]}\n
+Email: {admin[3]}\n
+Password: {admin[4]}\n
+Money: {admin[5]}
 * - - - - - - - - - - - - - *
               ''')

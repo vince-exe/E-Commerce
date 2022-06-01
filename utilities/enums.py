@@ -41,7 +41,8 @@ class SuperRootOptions(enum.Enum):
     DELETE_ADMIN = 2
     SEARCH_ADMIN = 3
     MODIFY_ADMIN = 4
-    EXIT = 5
+    VIEW_ADMINS = 5
+    EXIT = 6
 
 
 class PriceOptions(enum.Enum):

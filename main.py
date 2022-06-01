@@ -2,7 +2,7 @@ from database import database as db
 from menu.general_menu import general_menu
 from errors.handle_errors import db_conn_errors
 
-info = ['localhost', 'root', 'MySQL85.#(6@', 'ecommerce']
+info = ['localhost', 'root', 'mySQLroot45.&ciao#.', 'ecommerce']
 
 
 if __name__ == '__main__':

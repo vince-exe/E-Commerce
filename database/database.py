@@ -79,6 +79,9 @@ class Database:
         except mysql.connector.errors.OperationalError:
             return get_value(DatabaseErrors.CONNECTION_LOST)
 
+        except mysql.connector.errors.DataError:
+            return get_value(DatabaseErrors.DATA_ERROR)
+
         connection.commit()
 
     @staticmethod
@@ -380,3 +383,44 @@ class Database:
             return get_value(DatabaseErrors.CONNECTION_LOST)
 
         connection.commit()
+
+    @staticmethod
+    def get_last_person(cursor):
+        try:
+            cursor.execute("SELECT person.id FROM person ORDER BY person.id DESC LIMIT 1")
+            return cursor.fetchone()
+
+        except mysql.connector.errors.OperationalError:
+            return get_value(DatabaseErrors.CONNECTION_LOST)
+
+    @staticmethod
+    def add_root(cursor, connection):
+        try:
+            last_person_id = Database.get_last_person(cursor)
+
+            cursor.execute(f"""INSERT INTO administrator(person_id) VALUES ('{last_person_id[0]}');""")
+
+        except mysql.connector.OperationalError:
+            return get_value(DatabaseErrors.CONNECTION_LOST)
+
+        except mysql.connector.IntegrityError:
+            return get_value(DatabaseErrors.EMAIL_ALREADY_EXIST)
+
+        connection.commit()
+
+    @staticmethod
+    def get_admins(cursor, limit):
+        try:
+            cursor.execute(f"""SELECT administrator.id,
+                                      person.first_name,
+                                      person.last_name,
+                                      person.email,
+                                      person.psw,
+                                      person.money
+                                FROM ecommerce.administrator JOIN person ON person.id = administrator.person_id
+                                LIMIT {limit}
+                           """)
+            return cursor.fetchall()
+
+        except mysql.connector.OperationalError:
+            return get_value(DatabaseErrors.CONNECTION_LOST)

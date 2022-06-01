@@ -21,7 +21,7 @@ def initial_admin_menu(database, cursor, connection):
 
             elif option == 2:
                 if get_super_root_info(database, cursor):
-                    super_root_menu()
+                    super_root_menu(database, cursor, connection)
 
             elif option == 3:
                 return
@@ -47,7 +47,7 @@ def initial_customer_menu(database, cursor, connection):
                     customer_menu(cursor, database, connection, person)
 
             elif option == get_value(GeneralOptions.SIGN_UP):
-                info_customer = get_info_customer()
+                info_customer = get_info_person()
                 if add_person_errors(database.add_person(cursor, info_customer, connection), info_customer):
                     add_customer_errors(database.add_customer(cursor, connection, info_customer[2]))
 

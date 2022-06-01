@@ -75,9 +75,7 @@ def prod_searched_errors(product, product_name):
         return False
 
     elif product == get_value(DatabaseErrors.CONNECTION_LOST):
-        print("\nThe application has lost the connection with the server")
-
-        input("\nPress any key to continue...")
+        conn_lost_msg()
         return False
 
     return True
@@ -95,9 +93,7 @@ def customer_searched_errors(customer_searched, customer_name):
         return False
 
     elif customer_searched == get_value(DatabaseErrors.CONNECTION_LOST):
-        print("\nThe application has lost the connection with the server")
-
-        input("\nPress any key to continue...")
+        conn_lost_msg()
         return False
 
     return True
@@ -111,13 +107,17 @@ def add_person_errors(person, info_customer):
         return True
 
     elif person == get_value(DatabaseErrors.CONNECTION_LOST):
-        print(f"\nCan't sign up the application has lost the connection with the server")
-
-        input("\nPress any key to continue...")
+        conn_lost_msg()
         return False
 
     elif person == get_value(DatabaseErrors.EMAIL_ALREADY_EXIST):
         print(f'\nThere is already an user with the email: {info_customer[2]}')
+
+        input("\nPress any key to continue...")
+        return False
+
+    elif person == get_value(DatabaseErrors.DATA_ERROR):
+        print("\nERROR: First Name or Last Name too long")
 
         input("\nPress any key to continue...")
         return False
@@ -295,3 +295,33 @@ def update_price_errors(error):
     if error == get_value(DatabaseErrors.CONNECTION_LOST):
         conn_lost_msg()
         return
+
+
+def add_admin_errors(error, info):
+    if error == get_value(DatabaseErrors.CONNECTION_LOST):
+        conn_lost_msg()
+        return False
+
+    elif error == get_value(DatabaseErrors.DATA_ERROR):
+        print("\nERROR: First Name or Last Name too long")
+
+        input("\nPress any key to continue...")
+        return False
+
+    elif error == get_value(DatabaseErrors.EMAIL_ALREADY_EXIST):
+        print(f"\nThere is already a person with the email: {info[2]}")
+
+    return True
+
+
+def print_admin_errors(error):
+    if error == get_value(DatabaseErrors.CONNECTION_LOST):
+        conn_lost_msg()
+        return False
+
+    elif not len(error):
+        print("\nThere are no admins!!")
+        return False
+
+    return True
+
