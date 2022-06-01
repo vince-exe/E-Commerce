@@ -189,7 +189,17 @@ class Database:
     @staticmethod
     def delete_customer(cursor, connection, id_):
         try:
-            cursor.execute(f"DELETE FROM customer WHERE person_id = {id_}")
+            cursor.execute("SET FOREIGN_KEY_CHECKS = 0;")
+            connection.commit()
+
+            cursor.execute(f"""SELECT customer.person_id FROM customer
+                                       JOIN person ON person.id = customer.person_id WHERE customer.id = {id_};""")
+
+            person_id = cursor.fetchone()
+
+            cursor.execute(f"DELETE FROM customer WHERE customer.id = {id_};")
+            cursor.execute(f"""DELETE FROM person WHERE person.id = {person_id[0]};""")
+            connection.commit()
 
         except mysql.connector.errors.OperationalError:
             return get_value(DatabaseErrors.CONNECTION_LOST)
@@ -197,11 +207,6 @@ class Database:
         except mysql.connector.errors.InterfaceError:
             return get_value(DatabaseErrors.CONNECTION_LOST)
 
-        connection.commit()
-
-    @staticmethod
-    def delete_person(cursor, connection, id_):
-        cursor.execute(f"DELETE FROM person WHERE id = {id_}")
         connection.commit()
 
     @staticmethod

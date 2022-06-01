@@ -34,14 +34,6 @@ def clear_screen():
     print("\n" * 15)
 
 
-def get_name_surname(max_, string):
-    name = ""
-    while len(name) <= 0 or len(name) > max_:
-        name = input(f"\n{string}")
-
-    return name
-
-
 def get_money(min_, max_):
     money = -1.00
     while money < min_ or money > max_:
@@ -61,8 +53,8 @@ def get_info_admin(database, cursor):
 
 def get_info_customer():
     log_credentials = [
-                       get_name_surname(get_value(CredentialsOptions.EMAIL_MAX_LEN), "First Name: "),
-                       get_name_surname(get_value(CredentialsOptions.EMAIL_MAX_LEN), "Last Name: "),
+                       input("\nInsert the First Name: "),
+                       input("\nInsert the Last Name: "),
                        get_email(get_value(CredentialsOptions.EMAIL_MAX_LEN)),
                        get_psw(get_value(CredentialsOptions.PSW_MAX_LEN)),
                        get_money(get_value(MoneyOptions.MIN), get_value(MoneyOptions.MAX))

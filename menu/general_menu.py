@@ -4,6 +4,7 @@ from utilities.enums import *
 from menu.admin_menu import admin_menu
 from menu.super_root_menu import super_root_menu
 from menu.customer_menu import customer_menu
+from errors.handle_errors import signin_customer_errors, add_person_errors, add_customer_errors
 
 
 def initial_admin_menu(database, cursor, connection):
@@ -41,15 +42,14 @@ def initial_customer_menu(database, cursor, connection):
                                "\n\nInsert option (1 / 3): "))
 
             if option == get_value(GeneralOptions.SIGN_IN):
-                person = handle_sign_in_customer(get_psw_email_customer(), database, cursor)
+                person = signin_customer_errors(get_psw_email_customer(), database, cursor)
                 if person:
                     customer_menu(cursor, database, connection, person)
 
             elif option == get_value(GeneralOptions.SIGN_UP):
                 info_customer = get_info_customer()
-
-                if handle_add_person_errors(database.add_person(cursor, info_customer, connection), info_customer):
-                    handle_add_customer(database.add_customer(cursor, connection, info_customer[2]))
+                if add_person_errors(database.add_person(cursor, info_customer, connection), info_customer):
+                    add_customer_errors(database.add_customer(cursor, connection, info_customer[2]))
 
             elif option == get_value(GeneralOptions.EXIT):
                 return

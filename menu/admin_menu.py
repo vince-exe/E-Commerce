@@ -16,6 +16,10 @@ def view_customers_menu(cursor, database):
 
                 if customers == get_value(DatabaseErrors.CONNECTION_LOST):
                     print("\nThe application has lost the connection with the database")
+
+                elif not len(customers):
+                    print("\nThere are no customers registered")
+
                 else:
                     print_customers(customers)
                     limit += 5
@@ -131,9 +135,7 @@ def delete_customer_menu(database, connection, cursor):
                     except ValueError:
                         print("\nId must be a number!!")
 
-                deleted_customer = database.delete_customer(cursor, connection, id_)
-                if rmv_errors(deleted_customer):
-                    database.delete_person(cursor, connection, id_)
+                if rmv_errors(database.delete_customer(cursor, connection, id_)):
                     print(f"\nSuccessfully removed the customer with id: {id_}")
 
             elif option == 2:
@@ -149,9 +151,6 @@ def delete_customer_menu(database, connection, cursor):
 def search_customer_menu(database, cursor, customer_name):
     limit = 5
 
-    if not customer_searched_errors(database.get_customer_searched(cursor, customer_name, limit), customer_name):
-        return
-
     while True:
         try:
             option = int(input("\n1)View Customer"
@@ -159,8 +158,12 @@ def search_customer_menu(database, cursor, customer_name):
                                "\n\nInsert option (1 / 2): "))
 
             if option == 1:
-                print_customers(database.get_customer_searched(cursor, customer_name, limit))
-                limit += 5
+                if customer_searched_errors(database.get_customer_searched(cursor, customer_name, limit), customer_name):
+                    print_customers(database.get_customer_searched(cursor, customer_name, limit))
+                    limit += 5
+
+                else:
+                    return
 
             elif option == 2:
                 return
@@ -184,10 +187,12 @@ def modify_product(database, connection, cursor):
                                "\n\nInsert option (1 / 4): "))
 
             if option == 1:
-                database.update_name_product(cursor, connection, prod_id, input("\nInsert the new name: "))
+                prod_name = input("\nInsert the new name: ")
+                update_name_product_errors(database.update_name_product(cursor, connection, prod_id, prod_name),
+                                           prod_name)
 
             elif option == 2:
-                database.update_qnt_product(cursor, connection, prod_id, get_prod_qnt())
+                update_qnt_errors(database.update_qnt_product(cursor, connection, prod_id, get_prod_qnt()))
 
             elif option == 3:
                 database.update_price_product(cursor, connection, prod_id, get_prod_price(get_value(PriceOptions.MAX)))

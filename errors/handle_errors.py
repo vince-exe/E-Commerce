@@ -2,6 +2,13 @@ from utilities.enums import *
 from person.person import Person
 
 
+def conn_lost_msg():
+    print("\nThe application has lost the connection with the server")
+
+    input("\nPress any key to continue...")
+    return
+
+
 def add_prod_errors(error, prod_info):
     if error == get_value(DatabaseErrors.CONNECTION_LOST):
         print(f"\nCan't add the product: {prod_info[0]} the application lost the connection with the server :(")
@@ -48,9 +55,7 @@ def db_conn_errors(error, database):
         exit(-1)
 
     elif error == get_value(DatabaseErrors.CONNECTION_LOST):
-        print('\nThe application lost the connection with the server')
-
-        input("\nPress any key to continue...")
+        conn_lost_msg()
         exit(-1)
 
     # all the controls went fine.
@@ -60,9 +65,7 @@ def db_conn_errors(error, database):
 
 def prod_searched_errors(product, product_name):
     if product == -1:
-        print("\nThe application has lost the connection with the server")
-
-        input("\nPress any key to continue...")
+        conn_lost_msg()
         return False
 
     elif not len(product):
@@ -82,9 +85,7 @@ def prod_searched_errors(product, product_name):
 
 def customer_searched_errors(customer_searched, customer_name):
     if customer_searched == -1:
-        print("\nThe application has lost the connection with the server")
-
-        input("\nPress any key to continue...")
+        conn_lost_msg()
         return False
 
     elif not len(customer_searched):
@@ -124,9 +125,7 @@ def add_person_errors(person, info_customer):
 
 def add_customer_errors(person):
     if person == get_value(DatabaseErrors.CONNECTION_LOST):
-        print("\nThe application has lost the connection with the server")
-
-        input("\nPress any key to continue...")
+        conn_lost_msg()
         return False
 
 
@@ -166,9 +165,7 @@ def view_orders_errors(order):
         return False
 
     elif order == get_value(DatabaseErrors.CONNECTION_LOST):
-        print("\nThe application has lost the connection with the server")
-
-        input("\nPress any key to continue...")
+        conn_lost_msg()
         return False
 
     return True
@@ -176,9 +173,7 @@ def view_orders_errors(order):
 
 def search_orders_errors(orders, order_name):
     if orders == -1:
-        print("\nThe application has lost the connection with the server")
-
-        input("\nPress any key to continue...")
+        conn_lost_msg()
         return False
 
     elif not len(orders):
@@ -206,9 +201,7 @@ def signin_customer_errors(login_cred, database, cursor):
         return False
 
     elif db_cred == get_value(DatabaseErrors.CONNECTION_LOST):
-        print("\nThe application has lost the connection with the server")
-
-        input("\nPress any key to continue...")
+        conn_lost_msg()
         return False
 
     # check the password of the database and the password of the login
@@ -226,9 +219,7 @@ def signin_customer_errors(login_cred, database, cursor):
 
 def signin_super_root_errors(login_cred, super_root):
     if super_root == get_value(DatabaseErrors.CONNECTION_LOST):
-        print("\nThe application has lost the connection with the server")
-
-        input("\nPress any key to continue...")
+        conn_lost_msg()
         return False
 
     elif login_cred[0] == super_root[0] and login_cred[1] == super_root[1]:
@@ -252,9 +243,7 @@ def signin_root_errors(log_in_cred, db_cred):
         return False
 
     elif db_cred == get_value(DatabaseErrors.CONNECTION_LOST):
-        print(f"\nThe application has lost the connection with the server :(")
-
-        input("\nPress any key to continue...")
+        conn_lost_msg()
         return False
 
     # check email and password
@@ -272,9 +261,37 @@ def signin_root_errors(log_in_cred, db_cred):
 
 def rmv_errors(removed_product):
     if removed_product == get_value(DatabaseErrors.CONNECTION_LOST):
-        print(f"\nThe application has lost the connection with the server :(")
-
-        input("\nPress any key to continue...")
+        conn_lost_msg()
         return False
 
     return True
+
+
+def update_name_product_errors(error, prod_name):
+    if error == get_value(DatabaseErrors.CONNECTION_LOST):
+        conn_lost_msg()
+        return
+
+    elif error == get_value(DatabaseErrors.DATA_ERROR):
+        print(f"\nCan't update the product with the name: {prod_name}")
+
+        input("\nPress any key to continue...")
+        return
+
+
+def update_qnt_errors(error):
+    if error == get_value(DatabaseErrors.CONNECTION_LOST):
+        conn_lost_msg()
+        return
+
+    elif error == get_value(DatabaseErrors.DATA_ERROR):
+        print("\nCan't add the new quantity")
+
+        input("\nPress any key to continue...")
+        return
+
+
+def update_price_errors(error):
+    if error == get_value(DatabaseErrors.CONNECTION_LOST):
+        conn_lost_msg()
+        return
