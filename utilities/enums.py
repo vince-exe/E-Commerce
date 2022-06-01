@@ -63,6 +63,7 @@ class DatabaseErrors(enum.Enum):
     DATA_ERROR = -4
     EMAIL_ALREADY_EXIST = -5
     OUT_OF_STOCK = -6
+    NO_ADMIN_FOUND = -7
 
 
 class GeneralOptions(enum.Enum):

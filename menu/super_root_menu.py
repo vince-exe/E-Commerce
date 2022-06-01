@@ -1,7 +1,7 @@
-from errors.handle_errors import add_admin_errors, print_admin_errors
+from errors.handle_errors import add_admin_errors, print_admin_errors, delete_admin_errors, search_admin_errors
 
 from utilities.enums import *
-from utilities.utils import get_info_person, print_admins
+from utilities.utils import get_info_person, print_admins, get_id_root
 
 
 def print_admin_menu(database, cursor):
@@ -29,6 +29,34 @@ def print_admin_menu(database, cursor):
             print("\nOption must be a number!!")
 
 
+def search_admin_menu(database, cursor, admin_name):
+    limit = 5
+    while True:
+        try:
+            option = int(input("\n1)View Admin"
+                               "\n2)Exit"
+                               "\n\nInsert option (1 / 2): "))
+
+            if option == 1:
+                check = database.get_admin_searched(cursor, admin_name, limit)
+
+                if search_admin_errors(check, admin_name):
+                    print_admins(check)
+                    limit += 5
+
+                else:
+                    return
+
+            elif option == 2:
+                return
+
+            else:
+                print(f"\n{option} is not a valid option")
+
+        except ValueError:
+            print("\nOption must be a number!!")
+
+
 def super_root_menu(database, cursor, connection):
     while True:
         try:
@@ -46,10 +74,12 @@ def super_root_menu(database, cursor, connection):
                     database.add_root(cursor, connection)
 
             elif option == get_value(SuperRootOptions.DELETE_ADMIN):  # Delete Admin
-                pass
+                id_ = get_id_root()
+                delete_admin_errors(database.delete_admin(cursor, connection, id_), id_)
 
             elif option == get_value(SuperRootOptions.SEARCH_ADMIN):  # Search Admin
-                pass
+                admin_name = input("\nInsert the name: ")
+                search_admin_menu(database, cursor, admin_name)
 
             elif option == get_value(SuperRootOptions.MODIFY_ADMIN):  # Modify Admin
                 pass

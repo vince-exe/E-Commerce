@@ -325,3 +325,32 @@ def print_admin_errors(error):
 
     return True
 
+
+def delete_admin_errors(error, id_):
+    if error == get_value(DatabaseErrors.CONNECTION_LOST):
+        conn_lost_msg()
+        return
+
+    elif error == get_value(DatabaseErrors.NO_ADMIN_FOUND):
+        print(f"\nNo admin has the id: {id_}")
+
+        input("\nPress any key to continue...")
+        return
+
+    print(f"\nSuccessfully removed the admin with id: {id_}")
+
+    input("\nPress any key to continue...")
+
+
+def search_admin_errors(error, admin_name):
+    if error == get_value(DatabaseErrors.CONNECTION_LOST):
+        conn_lost_msg()
+        return False
+
+    elif len(error) == 0:
+        print(f"\nNo admin found with the name: {admin_name}")
+
+        input("\nPress any key to continue...")
+        return False
+
+    return True

@@ -144,9 +144,24 @@ def get_product_info():
 
 def get_id_product():
     id_ = -1
-    while id_ < 0:
+    while id_ <= 0:
         try:
             id_ = int(input("\nInsert the product id: "))
+
+        except ValueError:
+            print("\nId must be a number!!")
+
+    return id_
+
+
+def get_id_root():
+    id_ = -1
+    while id_ <= 1:
+        try:
+            id_ = int(input("\nInsert the id: "))
+
+            if id_ == 1:
+                print("\nCan not delete the super root!!")
 
         except ValueError:
             print("\nId must be a number!!")

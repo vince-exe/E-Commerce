@@ -424,3 +424,59 @@ class Database:
 
         except mysql.connector.OperationalError:
             return get_value(DatabaseErrors.CONNECTION_LOST)
+
+    @staticmethod
+    def get_person_id_super_root(cursor, id_):
+        try:
+            cursor.execute(f"""SELECT administrator.person_id
+
+                               FROM ecommerce.administrator JOIN person ON person.id = administrator.person_id
+                               WHERE administrator.id = {id_}
+                           """)
+
+            return cursor.fetchone()
+
+        except mysql.connector.OperationalError:
+            return get_value(DatabaseErrors.CONNECTION_LOST)
+
+    @staticmethod
+    def delete_admin(cursor, connection, admin_id):
+        try:
+            id_ = Database.get_person_id_super_root(cursor, admin_id)
+
+            if id_ is None:
+                return get_value(DatabaseErrors.NO_ADMIN_FOUND)
+
+            cursor.execute("SET FOREIGN_KEY_CHECKS = 0")
+            connection.commit()
+
+            cursor.execute(f"DELETE FROM person WHERE person.id = {id_[0]};")
+            connection.commit()
+
+            cursor.execute(f"DELETE FROM administrator WHERE administrator.person_id = {id_[0]};")
+            connection.commit()
+
+        except mysql.connector.errors.OperationalError:
+            return get_value(DatabaseErrors.CONNECTION_LOST)
+
+    @staticmethod
+    def get_admin_searched(cursor, admin_name, limit):
+        try:
+            cursor.execute(f"""SELECT administrator.id,
+                                      person.first_name,
+                                      person.last_name,
+                                      person.email,
+                                      person.psw,
+                                      person.money
+                                      
+                               FROM administrator
+                               
+                               JOIN person ON person.id = administrator.person_id
+                               
+                               WHERE person.first_name LIKE '%{admin_name}%' LIMIT {limit}
+                           """)
+
+            return cursor.fetchall()
+
+        except mysql.connector.errors.OperationalError:
+            return get_value(DatabaseErrors.CONNECTION_LOST)
