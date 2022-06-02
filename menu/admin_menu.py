@@ -1,5 +1,8 @@
 from utilities.utils import *
+
 from errors.handle_errors import *
+
+import os
 
 
 def view_customers_menu(cursor, database):
@@ -7,6 +10,7 @@ def view_customers_menu(cursor, database):
 
     while True:
         try:
+            os.system('cls||clear')
             option = int(input("\n1)Show Customers (5 at time)"
                                "\n2)Exit"
                                "\n\nInsert option (1 / 2): "))
@@ -22,21 +26,23 @@ def view_customers_menu(cursor, database):
 
                 else:
                     print_customers(customers)
+                    input("\nPress any key to continue...")
                     limit += 5
 
             elif option == 2:
                 return
 
             else:
-                print(f'\n{option} is not a valid option')
+                input(f'\n{option} is not a valid option\n\nPress any key to continue...')
 
         except ValueError:
-            print("\nOption must be a number!!")
+            input("\nOption must be a number!!\n\nPress any key to continue...")
 
 
 def view_products_menu(cursor, database):
     limit = 5
     while True:
+        os.system('cls||clear')
         try:
             option = int(input("\n1)View Products (5 at time)"
                                "\n2)Exit"
@@ -49,16 +55,17 @@ def view_products_menu(cursor, database):
 
                 else:
                     print_products(products)
+                    input("\nPress any key to continue...")
                     limit += 5
 
             elif option == 2:
                 return
 
             else:
-                print(f'\n{option} is not a valid option')
+                input(f'\n{option} is not a valid option\n\nPress any key to continue...')
 
         except ValueError:
-            print("\nOption must be a number!!")
+            input("\nOption must be a number!!\n\nPress any key to continue...")
 
 
 def view_product_searched(database, cursor, prod_name):
@@ -180,6 +187,7 @@ def modify_product(database, connection, cursor):
 
     while True:
         try:
+            os.system('cls||clear')
             option = int(input("\n1)Change Name"
                                "\n2)Change Quantity"
                                "\n3)Change Price"
@@ -187,6 +195,7 @@ def modify_product(database, connection, cursor):
                                "\n\nInsert option (1 / 4): "))
 
             if option == 1:
+                os.system('cls||clear')
                 prod_name = input("\nInsert the new name: ")
                 update_name_product_errors(database.update_name_product(cursor, connection, prod_id, prod_name),
                                            prod_name)
@@ -201,14 +210,15 @@ def modify_product(database, connection, cursor):
                 return
 
             else:
-                print(f'\n{option} is not an option')
+                input(f'\n{option} is not an option...')
 
         except ValueError:
-            print("\nOption must be a number!!")
+            input("\nOption must be a number!!")
 
 
 def admin_menu(database, cursor, connection):
     while True:
+        os.system('cls||clear')
         try:
             option = int(input(("\n1)View All Customers"
                                 "\n2)View All Products"
@@ -255,7 +265,7 @@ def admin_menu(database, cursor, connection):
                 return
 
             else:
-                print(f"{option} must be a number!!")
+                input(f"{option} is not a valid option...")
 
         except ValueError:
-            print("\nOption can't be a string!!")
+            input("\nOption must be a number!")

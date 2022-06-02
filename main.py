@@ -13,6 +13,7 @@ if __name__ == '__main__':
     cursor = connection.cursor()
 
     # start the menu function
+    input("\nPress any key to continue...")
     if not general_menu(database, cursor, connection):
         print("\nBye")
 

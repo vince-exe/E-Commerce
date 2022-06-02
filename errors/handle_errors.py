@@ -273,10 +273,14 @@ def update_name_product_errors(error, prod_name):
         return
 
     elif error == get_value(DatabaseErrors.DATA_ERROR):
-        print(f"\nCan't update the product with the name: {prod_name}")
-
-        input("\nPress any key to continue...")
+        input(f"\nCan't update the product with the name: {prod_name}\n\nPress any key to continue...")
         return
+
+    elif error == get_value(DatabaseErrors.NAME_ALREADY_EXIST):
+        input(f"\nThere is already a product named: {prod_name}\n\nPress any key to continue...")
+        return
+
+    input("\nSuccessfully updated the product name\n\nPress any key to continue...")
 
 
 def update_qnt_errors(error):

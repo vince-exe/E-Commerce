@@ -2,6 +2,8 @@ from utilities.enums import *
 from errors.handle_errors import signin_super_root_errors, signin_root_errors
 from datetime import date
 
+import os
+
 option_list = ['y', 'yes', 'Y', 'YES', 'YeS', 'YEs']
 
 
@@ -133,6 +135,7 @@ def get_order_id():
 
 
 def get_product_info():
+    os.system('cls||clear')
     info = [
             input("\nInsert the name: "),
             float(get_price(get_value(PriceOptions.MIN), get_value(PriceOptions.MAX))),
@@ -173,10 +176,11 @@ def get_prod_qnt():
     qnt = -1
     while qnt <= 0:
         try:
+            os.system('cls||clear')
             qnt = int(input("\nInsert the quantity: "))
 
         except ValueError:
-            print("\nQuantity must be a number")
+            input("\nQuantity must be a number!")
 
     return qnt
 
@@ -185,10 +189,11 @@ def get_prod_price(max_):
     price = 0
     while price <= 0 or price > max_:
         try:
+            os.system('cls||clear')
             price = float(input("\nInsert the price: "))
 
         except ValueError:
-            print("\nPrice must be a number")
+            input("\nPrice must be a number!")
 
     return price
 

@@ -4,12 +4,16 @@ from utilities.enums import *
 from menu.admin_menu import admin_menu
 from menu.super_root_menu import super_root_menu
 from menu.customer_menu import customer_menu
+
 from errors.handle_errors import signin_customer_errors, add_person_errors, add_customer_errors
+
+import os
 
 
 def initial_admin_menu(database, cursor, connection):
     while True:
         try:
+            os.system('cls||clear')
             option = int(input("\n1)Sign In (Standard Admin)"
                                "\n2)Sign In (Super Admin)"
                                "\n3)Exit"
@@ -27,15 +31,16 @@ def initial_admin_menu(database, cursor, connection):
                 return
 
             else:
-                print(f"\n{option} is not a valid option!!")
+                input(f"\n{option} is not a valid option!!\n\nPress any key to continue...")
 
         except ValueError:
-            print("\nOption must be a number")
+            input("\nOption must be a number\n\nPress any key to continue...")
 
 
 def initial_customer_menu(database, cursor, connection):
     while True:
         try:
+            os.system('cls||clear')
             option = int(input("\n1)Sign In"
                                "\n2)Sign Up"
                                "\n3)exit"
@@ -55,15 +60,16 @@ def initial_customer_menu(database, cursor, connection):
                 return
 
             else:
-                print(f"\n{option} is not a valid option!!")
+                input(f"\n{option} is not a valid option!!\n\nPress any key to continue...")
 
         except ValueError:
-            print("\nOption must be a number!!")
+            input("\nOption must be a number!!\n\nPress any key to continue...")
 
 
 def general_menu(database, cursor, connection):
     while True:
         try:
+            os.system('cls||clear')
             option = int(input("\n1)Log as Admin"
                                "\n2)Log as Customer"
                                "\n3)Exit"
@@ -79,7 +85,7 @@ def general_menu(database, cursor, connection):
                 return False
 
             else:
-                print(f"\n{option} is not a correct option!!")
+                input(f"\n{option} is not a correct option!!\n\nPress any key to continue...")
 
         except ValueError:
-            print("\nOption must be a number")
+            input("\nOption must be a number\n\nPress any key to continue...")
