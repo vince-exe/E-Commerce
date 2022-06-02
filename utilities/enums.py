@@ -66,6 +66,15 @@ class DatabaseErrors(enum.Enum):
     NO_ADMIN_FOUND = -7
 
 
+class ModifyAdminOptions(enum.Enum):
+    MODIFY_FIRST_NAME = 1
+    MODIFY_LAST_NAME = 2
+    MODIFY_EMAIL = 3
+    MODIFY_PASSWORD = 4
+    MODIFY_MONEY = 5
+    EXIT = 6
+
+
 class GeneralOptions(enum.Enum):
     SIGN_IN = 1
     SIGN_UP = 2

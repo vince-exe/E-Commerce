@@ -161,7 +161,7 @@ def get_id_root():
             id_ = int(input("\nInsert the id: "))
 
             if id_ == 1:
-                print("\nCan not delete the super root!!")
+                print("\nCan not effectuate any action on the super root id!!")
 
         except ValueError:
             print("\nId must be a number!!")

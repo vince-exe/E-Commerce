@@ -480,3 +480,62 @@ class Database:
 
         except mysql.connector.errors.OperationalError:
             return get_value(DatabaseErrors.CONNECTION_LOST)
+
+    @staticmethod
+    def update_person_first_name(cursor, connection, new_name, person_id):
+        try:
+            cursor.execute(f"UPDATE person SET person.first_name = '{new_name}' WHERE person.id = {person_id[0]};")
+
+        except mysql.connector.OperationalError:
+            return get_value(DatabaseErrors.CONNECTION_LOST)
+
+        except mysql.connector.errors.DataError:
+            return get_value(DatabaseErrors.DATA_ERROR)
+
+        connection.commit()
+
+    @staticmethod
+    def update_person_last_name(cursor, connection, new_name, person_id):
+        try:
+            cursor.execute(f"UPDATE person SET person.last_name = '{new_name}' WHERE person.id = {person_id[0]};")
+
+        except mysql.connector.OperationalError:
+            return get_value(DatabaseErrors.CONNECTION_LOST)
+
+        except mysql.connector.errors.DataError:
+            return get_value(DatabaseErrors.DATA_ERROR)
+
+        connection.commit()
+
+    @staticmethod
+    def update_person_email(cursor, connection, new_email, person_id):
+        try:
+            cursor.execute(f"UPDATE person SET person.email = '{new_email}' WHERE person.id = {person_id[0]};")
+
+        except mysql.connector.errors.OperationalError:
+            return get_value(DatabaseErrors.CONNECTION_LOST)
+
+        except mysql.connector.errors.IntegrityError:
+            return get_value(DatabaseErrors.EMAIL_ALREADY_EXIST)
+
+        connection.commit()
+
+    @staticmethod
+    def update_person_password(cursor, connection, new_psw, person_id):
+        try:
+            cursor.execute(f"UPDATE person SET person.psw = '{new_psw}' WHERE person.id = {person_id[0]};")
+
+        except mysql.connector.errors.OperationalError:
+            return get_value(DatabaseErrors.CONNECTION_LOST)
+
+        connection.commit()
+
+    @staticmethod
+    def update_person_money(cursor, connection, new_money, person_id):
+        try:
+            cursor.execute(f"UPDATE person SET person.money = '{new_money}' WHERE person.id = {person_id[0]}")
+
+        except mysql.connector.errors.OperationalError:
+            return get_value(DatabaseErrors)
+
+        connection.commit()

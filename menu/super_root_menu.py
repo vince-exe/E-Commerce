@@ -1,7 +1,7 @@
-from errors.handle_errors import add_admin_errors, print_admin_errors, delete_admin_errors, search_admin_errors
+from errors.handle_errors import *
 
 from utilities.enums import *
-from utilities.utils import get_info_person, print_admins, get_id_root
+from utilities.utils import get_info_person, print_admins, get_id_root, get_email, get_psw, get_money
 
 
 def print_admin_menu(database, cursor):
@@ -57,6 +57,61 @@ def search_admin_menu(database, cursor, admin_name):
             print("\nOption must be a number!!")
 
 
+def modify_admin_menu(database, cursor, connection, id_):
+    admin_id = database.get_person_id_super_root(cursor, id_)
+
+    if admin_id is None:
+        print(f"\nNo admin found with the id: {id_}")
+
+        input("\nPress any key to continue...")
+        return
+
+    elif admin_id == get_value(DatabaseErrors.CONNECTION_LOST):
+        conn_lost_msg()
+        return
+
+    while True:
+        try:
+            option = int(input("\n1)Modify First Name"
+                               "\n2)Modify Last Name"
+                               "\n3)Modify Email"
+                               "\n4)Modify Password"
+                               "\n5)Modify Money"
+                               "\n6)Exit"
+                               "\n\nInsert option (1 / 6): "))
+
+            if option == get_value(ModifyAdminOptions.MODIFY_FIRST_NAME):  # Modify First Name
+                first_name = input("\nInsert The First Name: ")
+                update_firstname_person(database.update_person_first_name(cursor, connection, first_name, admin_id),
+                                        first_name)
+
+            elif option == get_value(ModifyAdminOptions.MODIFY_LAST_NAME):  # Modify Last Name
+                last_name = input("\nInsert the Last Name: ")
+                update_lastname_person(database.update_person_last_name(cursor, connection, last_name, admin_id),
+                                       last_name)
+
+            elif option == get_value(ModifyAdminOptions.MODIFY_EMAIL):  # Modify Email
+                email = get_email(get_value(CredentialsOptions.EMAIL_MAX_LEN))
+                update_email_person(database.update_person_email(cursor, connection, email, admin_id), email)
+
+            elif option == get_value(ModifyAdminOptions.MODIFY_PASSWORD):  # Modify Password
+                psw = get_psw(get_value(CredentialsOptions.PSW_MAX_LEN))
+                update_password_person(database.update_person_password(cursor, connection, psw, admin_id))
+
+            elif option == get_value(ModifyAdminOptions.MODIFY_MONEY):  # Modify Money
+                money = get_money(get_value(MoneyOptions.MIN), get_value(MoneyOptions.MAX))
+                update_money_person(database.update_person_money(cursor, connection, money, admin_id))
+
+            elif option == get_value(ModifyAdminOptions.EXIT):  # Exit
+                return
+
+            else:
+                print(f"\n{option} is not a valid option")
+
+        except ValueError:
+            print("\nOption must be a number!!")
+
+
 def super_root_menu(database, cursor, connection):
     while True:
         try:
@@ -82,9 +137,11 @@ def super_root_menu(database, cursor, connection):
                 search_admin_menu(database, cursor, admin_name)
 
             elif option == get_value(SuperRootOptions.MODIFY_ADMIN):  # Modify Admin
+                id_ = get_id_root()
+                modify_admin_menu(database, cursor, connection, id_)
                 pass
 
-            elif option == get_value(SuperRootOptions.VIEW_ADMINS):
+            elif option == get_value(SuperRootOptions.VIEW_ADMINS):  # View Admins
                 print_admin_menu(database, cursor)
 
             elif option == get_value(SuperRootOptions.EXIT):  # Exit

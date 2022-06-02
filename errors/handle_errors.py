@@ -354,3 +354,61 @@ def search_admin_errors(error, admin_name):
         return False
 
     return True
+
+
+def update_firstname_person(error, first_name):
+    if error == get_value(DatabaseErrors.CONNECTION_LOST):
+        conn_lost_msg()
+        return
+
+    elif error == get_value(DatabaseErrors.DATA_ERROR):
+        print(f"\nCan't update the admin with this name: {first_name}")
+
+        input("\nPress any key to continue...")
+        return
+
+    input("\nSuccessfully update the first name\n\nPress any key to continue...")
+
+
+def update_lastname_person(error, last_name):
+    if error == get_value(DatabaseErrors.CONNECTION_LOST):
+        conn_lost_msg()
+        return
+
+    elif error == get_value(DatabaseErrors.DATA_ERROR):
+        print(f"\nCan't update the admin with this last name: {last_name}")
+
+        input("\nPress any key to continue...")
+        return
+
+    input("\nSuccessfully update the last name\n\nPress any key to continue...")
+
+
+def update_email_person(error, email):
+    if error == get_value(DatabaseErrors.CONNECTION_LOST):
+        conn_lost_msg()
+        return
+
+    elif error == get_value(DatabaseErrors.EMAIL_ALREADY_EXIST):
+        print(f"\nThere is already a person with the email: {email}")
+
+        input("\nPress any key to continue...")
+        return
+
+    print("\nSuccessfully update the email\n\nPress any key to continue...")
+
+
+def update_password_person(error):
+    if error == get_value(DatabaseErrors.CONNECTION_LOST):
+        conn_lost_msg()
+        return
+
+    input("\nSuccessfully update the password\n\nPress any key to continue...")
+
+
+def update_money_person(error):
+    if error == get_value(DatabaseErrors.CONNECTION_LOST):
+        conn_lost_msg()
+        return
+
+    input("\nSuccessfully updated the money\n\nPress any key to continue...")
