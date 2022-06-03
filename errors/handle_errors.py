@@ -3,13 +3,6 @@ from utilities.enums import *
 from person.person import Person
 
 
-def shut_down(cursor, connection):
-    cursor.close()
-    connection.close()
-
-    exit(0)
-
-
 def conn_lost_msg():
     input("\nThe application has lost the connection with the server\n\nPress any key to continue...")
     return
@@ -141,7 +134,7 @@ def prod_bought_errors(product, money):
         return False
 
     elif product == get_value(DatabaseErrors.CONNECTION_LOST):
-        input("\nThe application has lost the connectio with the server\n\nPress any key to continue...")
+        input("\nThe application has lost the connection with the server\n\nPress any key to continue...")
         return False
 
     elif money < product[2]:
@@ -191,8 +184,8 @@ def search_orders_errors(orders, order_name):
     return True
 
 
-def signin_customer_errors(login_cred, database, cursor):
-    db_cred = database.get_customer_info(cursor, login_cred[0])
+def signin_customer_errors(login_cred, database):
+    db_cred = database.get_customer_info(login_cred[0])
 
     if db_cred is None:
         print("\nSomething went wrong with username and password")

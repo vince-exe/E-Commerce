@@ -10,7 +10,7 @@ from errors.handle_errors import signin_customer_errors, add_person_errors, add_
 import os
 
 
-def initial_admin_menu(database, cursor, connection):
+def initial_admin_menu(database):
     while True:
         try:
             os.system('cls||clear')
@@ -20,12 +20,12 @@ def initial_admin_menu(database, cursor, connection):
                                "\n\nInsert option (1 / 3): "))
 
             if option == 1:
-                if get_info_admin(database, cursor, connection):
-                    admin_menu(database, cursor, connection)
+                if get_info_admin(database):
+                    admin_menu(database)
 
             elif option == 2:
-                if get_super_root_info(database, cursor, connection):
-                    super_root_menu(database, cursor, connection)
+                if get_super_root_info(database):
+                    super_root_menu(database)
 
             elif option == 3:
                 return
@@ -37,10 +37,10 @@ def initial_admin_menu(database, cursor, connection):
             input("\nOption must be a number\n\nPress any key to continue...")
 
         except KeyboardInterrupt:
-            shut_down(cursor, connection)
+            database.shut_down()
 
 
-def initial_customer_menu(database, cursor, connection):
+def initial_customer_menu(database):
     while True:
         try:
             os.system('cls||clear')
@@ -50,14 +50,14 @@ def initial_customer_menu(database, cursor, connection):
                                "\n\nInsert option (1 / 3): "))
 
             if option == get_value(GeneralOptions.SIGN_IN):
-                person = signin_customer_errors(get_psw_email_customer(cursor, connection), database, cursor)
+                person = signin_customer_errors(get_psw_email_customer(), database)
                 if person:
-                    customer_menu(cursor, database, connection, person)
+                    customer_menu(database, person)
 
             elif option == get_value(GeneralOptions.SIGN_UP):
-                info_customer = get_info_person(cursor, connection)
-                if add_person_errors(database.add_person(cursor, info_customer, connection), info_customer):
-                    add_customer_errors(database.add_customer(cursor, connection, info_customer[2]))
+                info_customer = get_info_person()
+                if add_person_errors(database.add_person(info_customer), info_customer):
+                    add_customer_errors(database.add_customer(info_customer[2]))
 
             elif option == get_value(GeneralOptions.EXIT):
                 return
@@ -68,11 +68,8 @@ def initial_customer_menu(database, cursor, connection):
         except ValueError:
             input("\nOption must be a number!!\n\nPress any key to continue...")
 
-        except KeyboardInterrupt:
-            shut_down(cursor, connection)
 
-
-def general_menu(database, cursor, connection):
+def general_menu(database):
     while True:
         try:
             os.system('cls||clear')
@@ -82,10 +79,10 @@ def general_menu(database, cursor, connection):
                                "\n\nInsert option (1 / 3): "))
 
             if option == get_value(GeneralMenuOptions.LOG_AS_ADMIN):
-                initial_admin_menu(database, cursor, connection)
+                initial_admin_menu(database)
 
             elif option == get_value(GeneralMenuOptions.LOG_AS_CUSTOMER):
-                initial_customer_menu(database, cursor, connection)
+                initial_customer_menu(database)
 
             elif option == get_value(GeneralMenuOptions.EXIT):
                 return False
@@ -95,6 +92,3 @@ def general_menu(database, cursor, connection):
 
         except ValueError:
             input("\nOption must be a number\n\nPress any key to continue...")
-
-        except KeyboardInterrupt:
-            shut_down(cursor, connection)

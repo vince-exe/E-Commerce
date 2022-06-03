@@ -1,5 +1,5 @@
 from utilities.enums import *
-from errors.handle_errors import signin_super_root_errors, signin_root_errors, shut_down
+from errors.handle_errors import signin_super_root_errors, signin_root_errors
 from datetime import date
 
 import os
@@ -44,65 +44,57 @@ def get_money(min_, max_):
     return money
 
 
-def get_info_admin(database, cursor, connection):
-    log_credentials = (get_email(get_value(CredentialsOptions.EMAIL_MAX_LEN), cursor, connection),
-                       get_psw(get_value(CredentialsOptions.PSW_MAX_LEN), cursor, connection))
+def get_info_admin(database):
+    log_credentials = (get_email(get_value(CredentialsOptions.EMAIL_MAX_LEN)),
+                       get_psw(get_value(CredentialsOptions.PSW_MAX_LEN)))
 
-    db_credential = database.get_admin_info(cursor, log_credentials[0])
+    db_credential = database.get_admin_info(log_credentials[0])
 
     return signin_root_errors(log_credentials, db_credential)
 
 
-def get_info_person(cursor, connection):
+def get_info_person():
     log_credentials = [
                        input("\nInsert the First Name: "),
                        input("\nInsert the Last Name: "),
-                       get_email(get_value(CredentialsOptions.EMAIL_MAX_LEN), cursor, connection),
-                       get_psw(get_value(CredentialsOptions.PSW_MAX_LEN), cursor, connection),
+                       get_email(get_value(CredentialsOptions.EMAIL_MAX_LEN)),
+                       get_psw(get_value(CredentialsOptions.PSW_MAX_LEN)),
                        get_money(get_value(MoneyOptions.MIN), get_value(MoneyOptions.MAX))
                        ]
 
     return log_credentials
 
 
-def get_psw_email_customer(cursor, connection):
+def get_psw_email_customer():
     log_credentials = [
-                      get_email(get_value(CredentialsOptions.EMAIL_MAX_LEN), cursor, connection),
-                      get_psw(get_value(CredentialsOptions.PSW_MAX_LEN), cursor, connection)
+                      get_email(get_value(CredentialsOptions.EMAIL_MAX_LEN)),
+                      get_psw(get_value(CredentialsOptions.PSW_MAX_LEN))
                       ]
 
     return log_credentials
 
 
-def get_super_root_info(database, cursor, connection):
-    log_credentials = (get_email(get_value(CredentialsOptions.EMAIL_MAX_LEN), cursor, connection),
-                       get_psw(get_value(CredentialsOptions.PSW_MAX_LEN), cursor, connection))
+def get_super_root_info(database):
+    log_credentials = (get_email(get_value(CredentialsOptions.EMAIL_MAX_LEN)),
+                       get_psw(get_value(CredentialsOptions.PSW_MAX_LEN)))
 
-    db_credentials = database.get_super_root(cursor)
+    db_credentials = database.get_super_root()
 
     return signin_super_root_errors(log_credentials, db_credentials)
 
 
-def get_email(max_len, cursor, connection):
+def get_email(max_len):
     while True:
-        try:
-            email_ = input("\nInsert the email: ")
+        email_ = input("\nInsert the email: ")
 
-            if email_.endswith("@gmail.com") and len(email_) < max_len:
-                return email_
-
-        except KeyboardInterrupt:
-            shut_down(cursor, connection)
+        if email_.endswith("@gmail.com") and len(email_) < max_len:
+            return email_
 
 
-def get_psw(max_len, cursor, connection):
+def get_psw(max_len):
     psw = ''
     while len(psw) <= 0 or len(psw) > max_len:
-        try:
-            psw = input("\nInsert the password: ")
-
-        except KeyboardInterrupt:
-            shut_down(cursor, connection)
+        psw = input("\nInsert the password: ")
 
     return psw
 
@@ -194,7 +186,7 @@ def get_prod_qnt():
     return qnt
 
 
-def get_prod_price(max_, cursor, connection):
+def get_prod_price(max_):
     price = 0
     while price <= 0 or price > max_:
         try:
@@ -203,9 +195,6 @@ def get_prod_price(max_, cursor, connection):
 
         except ValueError:
             input("\nPrice must be a number!")
-
-        except KeyboardInterrupt:
-            shut_down(cursor, connection)
 
     return price
 
