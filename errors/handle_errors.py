@@ -1,11 +1,17 @@
 from utilities.enums import *
+
 from person.person import Person
 
 
-def conn_lost_msg():
-    print("\nThe application has lost the connection with the server")
+def shut_down(cursor, connection):
+    cursor.close()
+    connection.close()
 
-    input("\nPress any key to continue...")
+    exit(0)
+
+
+def conn_lost_msg():
+    input("\nThe application has lost the connection with the server\n\nPress any key to continue...")
     return
 
 
@@ -131,21 +137,15 @@ def add_customer_errors(person):
 
 def prod_bought_errors(product, money):
     if product is None:
-        print("\nThe product doesn't exist")
-
-        input("\nPress any key to continue...")
+        input("\nThe product doesn't exist\n\nPress any key to continue...")
         return False
 
     elif product == get_value(DatabaseErrors.CONNECTION_LOST):
-        print("\nThe application has lost the connectio with the server")
-
-        input("\nPress any key to exit...")
+        input("\nThe application has lost the connectio with the server\n\nPress any key to continue...")
         return False
 
     elif money < product[2]:
-        print("\nYou don't have enough money")
-
-        input("\nPress any key to continue...")
+        input("\nYou don't have enough money\n\nPress any key to continue...")
         return False
 
     return True
@@ -307,14 +307,13 @@ def add_admin_errors(error, info):
         return False
 
     elif error == get_value(DatabaseErrors.DATA_ERROR):
-        print("\nERROR: First Name or Last Name too long")
-
-        input("\nPress any key to continue...")
+        input("\nERROR: First Name or Last Name too long\n\nPress any key to continue...")
         return False
 
     elif error == get_value(DatabaseErrors.EMAIL_ALREADY_EXIST):
-        print(f"\nThere is already a person with the email: {info[2]}")
+        print(f"\nThere is already a person with the email: {info[2]}\n\nPress any key to continue...")
 
+    input("\nSuccessfully added the new root\n\nPress any key to continue...")
     return True
 
 
@@ -336,14 +335,10 @@ def delete_admin_errors(error, id_):
         return
 
     elif error == get_value(DatabaseErrors.NO_ADMIN_FOUND):
-        print(f"\nNo admin has the id: {id_}")
-
-        input("\nPress any key to continue...")
+        input(f"\nNo admin has the id: {id_}\n\nPress any key to continue...")
         return
 
-    print(f"\nSuccessfully removed the admin with id: {id_}")
-
-    input("\nPress any key to continue...")
+    input(f"\nSuccessfully removed the admin with id: {id_}\n\nPress any key to continue...")
 
 
 def search_admin_errors(error, admin_name):
@@ -352,9 +347,7 @@ def search_admin_errors(error, admin_name):
         return False
 
     elif len(error) == 0:
-        print(f"\nNo admin found with the name: {admin_name}")
-
-        input("\nPress any key to continue...")
+        input(f"\nNo admin found with the name: {admin_name}\n\nPress any key to continue...")
         return False
 
     return True
@@ -366,9 +359,7 @@ def update_firstname_person(error, first_name):
         return
 
     elif error == get_value(DatabaseErrors.DATA_ERROR):
-        print(f"\nCan't update the admin with this name: {first_name}")
-
-        input("\nPress any key to continue...")
+        input(f"\nCan't update the admin with this name: {first_name}\n\nPress any key to continue...")
         return
 
     input("\nSuccessfully update the first name\n\nPress any key to continue...")
@@ -380,9 +371,7 @@ def update_lastname_person(error, last_name):
         return
 
     elif error == get_value(DatabaseErrors.DATA_ERROR):
-        print(f"\nCan't update the admin with this last name: {last_name}")
-
-        input("\nPress any key to continue...")
+        input(f"\nCan't update the admin with this last name: {last_name}\n\nPress any key to continue...")
         return
 
     input("\nSuccessfully update the last name\n\nPress any key to continue...")
@@ -394,12 +383,10 @@ def update_email_person(error, email):
         return
 
     elif error == get_value(DatabaseErrors.EMAIL_ALREADY_EXIST):
-        print(f"\nThere is already a person with the email: {email}")
-
-        input("\nPress any key to continue...")
+        input(f"\nThere is already a person with the email: {email}\n\nPress any key to continue...")
         return
 
-    print("\nSuccessfully update the email\n\nPress any key to continue...")
+    input("\nSuccessfully update the email\n\nPress any key to continue...")
 
 
 def update_password_person(error):

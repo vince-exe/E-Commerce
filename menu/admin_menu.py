@@ -5,7 +5,7 @@ from errors.handle_errors import *
 import os
 
 
-def view_customers_menu(cursor, database):
+def view_customers_menu(cursor, database, connection):
     limit = 5
 
     while True:
@@ -19,10 +19,11 @@ def view_customers_menu(cursor, database):
                 customers = database.get_customers(cursor, limit)
 
                 if customers == get_value(DatabaseErrors.CONNECTION_LOST):
-                    print("\nThe application has lost the connection with the database")
+                    input("""\nThe application has lost the connection with the database
+                                  \n\nPress any key to continue...""")
 
                 elif not len(customers):
-                    print("\nThere are no customers registered")
+                    input("\nThere are no customers registered\n\nPress any key to continue...")
 
                 else:
                     print_customers(customers)
@@ -33,17 +34,22 @@ def view_customers_menu(cursor, database):
                 return
 
             else:
-                input(f'\n{option} is not a valid option\n\nPress any key to continue...')
+                try:
+                    input(f'\n{option} is not a valid option\n\nPress any key to continue...')
+
+                except KeyboardInterrupt:
+                    shut_down(cursor, connection)
 
         except ValueError:
             input("\nOption must be a number!!\n\nPress any key to continue...")
 
 
-def view_products_menu(cursor, database):
+def view_products_menu(cursor, database, connection):
     limit = 5
     while True:
-        os.system('cls||clear')
         try:
+            os.system('cls||clear')
+
             option = int(input("\n1)View Products (5 at time)"
                                "\n2)Exit"
                                "\n\nInsert option (1 / 2): "))
@@ -51,18 +57,31 @@ def view_products_menu(cursor, database):
             if option == 1:
                 products = database.get_products(cursor, limit)
                 if products == get_value(DatabaseErrors.CONNECTION_LOST):
-                    print("\nThe application has lost the connection with the server")
+                    try:
+                        input("""\nThe application has lost the connection with the server
+                                  \n\nPress any key to continue...""")
+
+                    except KeyboardInterrupt:
+                        shut_down(cursor, connection)
 
                 else:
-                    print_products(products)
-                    input("\nPress any key to continue...")
-                    limit += 5
+                    try:
+                        print_products(products)
+                        input("\nPress any key to continue...")
+                        limit += 5
+
+                    except KeyboardInterrupt:
+                        shut_down(cursor, connection)
 
             elif option == 2:
                 return
 
             else:
-                input(f'\n{option} is not a valid option\n\nPress any key to continue...')
+                try:
+                    input(f'\n{option} is not a valid option\n\nPress any key to continue...')
+
+                except KeyboardInterrupt:
+                    shut_down(cursor, connection)
 
         except ValueError:
             input("\nOption must be a number!!\n\nPress any key to continue...")
@@ -73,6 +92,7 @@ def view_product_searched(database, cursor, prod_name):
 
     while True:
         try:
+            os.system('cls||clear')
             option = int(input("\n1)View Products (5 at time)"
                                "\n2)Exit"
                                "\n\nInsert option (1 / 2): "))
@@ -80,23 +100,26 @@ def view_product_searched(database, cursor, prod_name):
             if option == 1:
                 if not prod_searched_errors(database.get_product_searched(cursor, prod_name, limit), prod_name):
                     return
+
                 else:
                     print_products(database.get_product_searched(cursor, prod_name, limit))
+                    input("\n\nPress any key to continue...")
                     limit += 5
 
             elif option == 2:
                 return
 
             else:
-                print(f'\n{option} is not an option')
+                input(f'\n{option} is not an option\n\nPress any key to continue...')
 
         except ValueError:
-            print("\nOption must be a number")
+            print("\nOption must be a number\n\nPress any key to continue...")
 
 
 def delete_product_menu(database, cursor, connection):
     while True:
         try:
+            os.system('cls||clear')
             option = int(input("\n1)Delete Product"
                                "\n2)Exit"
                                "\n\nInsert option (1 /2): "
@@ -106,28 +129,30 @@ def delete_product_menu(database, cursor, connection):
             if option == 1:
                 while True:
                     try:
+                        os.system('cls||clear')
                         id_ = int(input("\nInsert the product id: "))
                         break
                     except ValueError:
-                        print("\nId must be a number")
+                        input("\nId must be a number!!\n\nPress any key to continue...")
 
                 del_prod = database.delete_product(cursor, connection, id_)
                 if rmv_errors(del_prod):
-                    print(f"\nSuccessfully removed the product with id: {id_}")
+                    input(f"\nSuccessfully removed the product with id: {id_}\n\nPress any key to continue...")
 
             elif option == 2:
                 return
 
             else:
-                print(f'\n{option} is not a valid option')
+                input(f'\n{option} is not a valid option\n\nPress any key to continue...')
 
         except ValueError:
-            print("\nOption must be a number!!")
+            input("\nOption must be a number!!\n\nPress any key to continue...")
 
 
 def delete_customer_menu(database, connection, cursor):
     while True:
         try:
+            os.system('cls||clear')
             option = int(input("\n1)Delete Customer"
                                "\n2)Exit"
                                "\n\nInsert option (1 / 2): "
@@ -140,19 +165,19 @@ def delete_customer_menu(database, connection, cursor):
                         id_ = int(input("\nInsert the customer id: "))
                         break
                     except ValueError:
-                        print("\nId must be a number!!")
+                        input("\nId must be a number!!\n\nPress any key to continue...")
 
                 if rmv_errors(database.delete_customer(cursor, connection, id_)):
-                    print(f"\nSuccessfully removed the customer with id: {id_}")
+                    input(f"\nSuccessfully removed the customer with id: {id_}\n\nPress any key to continue...")
 
             elif option == 2:
                 return
 
             else:
-                print(f"\n{option} is not a valid option")
+                input(f"\n{option} is not a valid option\n\nPress any key to continue...")
 
         except ValueError:
-            print("\nOption must be a number!!")
+            input("\nOption must be a number!!\n\nPress any key to continue...")
 
 
 def search_customer_menu(database, cursor, customer_name):
@@ -160,13 +185,17 @@ def search_customer_menu(database, cursor, customer_name):
 
     while True:
         try:
+            os.system('cls||clear')
             option = int(input("\n1)View Customer"
                                "\n2)Exit"
                                "\n\nInsert option (1 / 2): "))
 
             if option == 1:
-                if customer_searched_errors(database.get_customer_searched(cursor, customer_name, limit), customer_name):
+                if customer_searched_errors(database.get_customer_searched(cursor, customer_name, limit),
+                                            customer_name):
+
                     print_customers(database.get_customer_searched(cursor, customer_name, limit))
+                    input("\n\nPress any key to continue...")
                     limit += 5
 
                 else:
@@ -176,10 +205,10 @@ def search_customer_menu(database, cursor, customer_name):
                 return
 
             else:
-                print(f"\n{option} is not a valid option")
+                input(f"\n{option} is not a valid option\n\nPress any key to continue...")
 
         except ValueError:
-            print("\nOption must be a number!!")
+            input("\nOption must be a number!!\n\nPress any key to continue...")
 
 
 def modify_product(database, connection, cursor):
@@ -204,7 +233,8 @@ def modify_product(database, connection, cursor):
                 update_qnt_errors(database.update_qnt_product(cursor, connection, prod_id, get_prod_qnt()))
 
             elif option == 3:
-                database.update_price_product(cursor, connection, prod_id, get_prod_price(get_value(PriceOptions.MAX)))
+                database.update_price_product(cursor, connection, prod_id, get_prod_price(get_value(PriceOptions.MAX),
+                                                                                          cursor, connection))
 
             elif option == 4:
                 return
@@ -233,16 +263,17 @@ def admin_menu(database, cursor, connection):
                                 )))
 
             if option == get_value(AdminOptions.VIEW_CUSTOMERS):  # View Customers
-                view_customers_menu(cursor, database)
+                view_customers_menu(cursor, database, connection)
 
             elif option == get_value(AdminOptions.VIEW_PRODUCTS):  # View Products
-                view_products_menu(cursor, database)
+                view_products_menu(cursor, database, connection)
 
             elif option == get_value(AdminOptions.ADD_PRODUCT):  # Add Product
                 prod_info = get_product_info()
                 add_prod_errors(database.add_product(cursor, prod_info, connection), prod_info)
 
             elif option == get_value(AdminOptions.MODIFY_PRODUCT):  # Modify Product
+                input("\n\nNote: The application doesn't check if you are using the correct id..")
                 modify_product(database, connection, cursor)
 
             elif option == get_value(AdminOptions.SEARCH_PRODUCT):  # Search Product
@@ -250,11 +281,11 @@ def admin_menu(database, cursor, connection):
                 view_product_searched(database, cursor, prod_name)
 
             elif option == get_value(AdminOptions.DELETE_PRODUCT):  # Delete Product
-                print("\n\nNote: The application doesn't check if you are using the correct id")
+                input("\n\nNote: The application doesn't check if you are using the correct id..")
                 delete_product_menu(database, cursor, connection)
 
             elif option == get_value(AdminOptions.DELETE_CUSTOMER):  # Delete Customer
-                print("\n\nNote: The application doesn't check if you are using the correct id")
+                input("\n\nNote: The application doesn't check if you are using the correct id..")
                 delete_customer_menu(database, connection, cursor)
 
             elif option == get_value(AdminOptions.SEARCH_CUSTOMER):  # Search Customer
@@ -269,3 +300,6 @@ def admin_menu(database, cursor, connection):
 
         except ValueError:
             input("\nOption must be a number!")
+
+        except KeyboardInterrupt:
+            shut_down(cursor, connection)

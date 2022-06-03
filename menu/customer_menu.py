@@ -15,15 +15,11 @@ def buy_product(database, prod_name, cursor, person, connection):
     check = database.rmv_qnt_product(cursor, connection, prod_name)
 
     if check == get_value(DatabaseErrors.CONNECTION_LOST):
-        print("\nThe application has lost the connection with the server")
-
-        input("\nPress any key to continue...")
+        input("\nThe application has lost the connection with the server\n\nPress any key to continue...")
         return
 
     elif check == get_value(DatabaseErrors.OUT_OF_STOCK):
-        print("\nthe product is out of stock")
-
-        input("\nPress any key to continue...")
+        input("\nthe product is out of stock\n\nPress any key to continue...")
         return
 
     person.remove_money(product[2])
@@ -33,22 +29,18 @@ def buy_product(database, prod_name, cursor, person, connection):
     database.create_my_order(cursor, connection, customer_id[0])
     database.create_prod_ordered(cursor, connection, product[0], customer_id[0])
 
-    print(f"\nSuccessfully ordered the product: {product[1]}")
-    input("\nPress any key to continue...")
+    input(f"\nSuccessfully ordered the product: {product[1]}\n\nPress any key to continue...")
 
 
 def add_money(database, cursor, connection, person, credit):
     person.add_money(credit)
 
     if database.customer_change_money(cursor, connection, person.get_money(), person.get_id()):
-        print(f"\nSuccessfully added {credit} to the account")
-
-        input("\nPress any key to continue...")
+        input(f"\nSuccessfully added {credit} to the account\n\nPress any key to continue...")
         return
 
     person.remove_money(credit)
     print("\nCan't add money to the account, the application has lost the connection with the server")
-
     input("\nPress any key to continue...")
     return
 
@@ -58,13 +50,13 @@ def view_orders(database, cursor, person):
 
     customer_id = database.get_customer_id(cursor, person.get_id())
     if customer_id == get_value(DatabaseErrors.CONNECTION_LOST):
-        print("\nThe application has lost the connection with the server")
-
-        input("\nPress any key to continue...")
+        input("\nThe application has lost the connection with the server\n\nPress any key to continue...")
         return
 
     while True:
         try:
+            os.system('cls||clear')
+
             option = int(input("\n1)View Orders (5 at time)"
                                "\n2)Exit"
                                "\n\nInsert option (1 / 2): "))
@@ -75,38 +67,37 @@ def view_orders(database, cursor, person):
 
                     if view_orders_errors(order):
                         print_orders(order)
+                        input("\n\nPress any key to continue...")
                         limit += 5
                     else:
                         return
 
                 except TypeError:
-                    print("\nThe application has lost the connection with the server")
-
-                    input("\nPress any key to continue...")
+                    input("\nThe application has lost the connection with the server\n\nPress any key to continue...")
                     return
 
             elif option == 2:
                 return
 
             else:
-                print(f'\n{option} is not an option')
+                input(f'\n{option} is not an option\n\nPress any key to continue...')
 
         except ValueError:
-            print("\nOption must be a number")
+            input("\nOption must be a number\n\nPress any key to continue...")
 
 
 def search_order_menu(database, cursor, prod_name, person):
     customer_id = database.get_customer_id(cursor, person.get_id())
 
     if customer_id == get_value(DatabaseErrors.CONNECTION_LOST):
-        print("\nThe application has lost the connection with the server")
-
-        input("\nPress an key to continue...")
+        input("\nThe application has lost the connection with the server\n\nPress any key to continue...")
         return
 
     limit = 5
     while True:
         try:
+            os.system('cls||clear')
+
             option = int(input("\n1)View Orders"
                                "\n2)Exit"
                                "\n\nInsert an option (1 / 2): "))
@@ -116,6 +107,7 @@ def search_order_menu(database, cursor, prod_name, person):
 
                 if search_orders_errors(orders, prod_name):
                     print_orders(orders)
+                    input("\n\nPress any key to continue...")
                     limit += 5
                 else:
                     return
@@ -124,27 +116,26 @@ def search_order_menu(database, cursor, prod_name, person):
                 return
 
             else:
-                print(f'\n{option} is not a valid option')
+                input(f'\n{option} is not a valid option\n\nPress any key to continue...')
 
         except ValueError:
-            print("\nOption must be a number!!")
+            input("\nOption must be a number!!\n\nPress any key to continue...")
 
 
 def delete_customer_order(database, cursor, connection):
     id_ = get_order_id()
 
     if database.delete_order(cursor, connection, id_) == get_value(DatabaseErrors.CONNECTION_LOST):
-        print("\nThe application has lost the connection with the server")
-
-        input("\nPress any key to continue...")
+        input("\nThe application has lost the connection with the server\n\nPress any key to continue...")
         return
 
-    print(f"\nSuccessfully removed the order with id: {id_}")
+    input(f"\nSuccessfully removed the order with id: {id_}\n\nPress any key to continue...")
 
 
 def customer_menu(cursor, database, connection, person):
     while True:
         try:
+            os.system('cls||clear')
             option_ = int(input("\n1)View All Products"
                                 "\n2)Search Product"
                                 "\n3)Buy Product"
@@ -157,7 +148,7 @@ def customer_menu(cursor, database, connection, person):
                                 "\n\nInsert option (1 / 9): "))
 
             if option_ == get_value(CustomerOptions.VIEW_PRODUCTS):  # View Orders
-                view_products_menu(cursor, database)
+                view_products_menu(cursor, database, connection)
 
             elif option_ == get_value(CustomerOptions.SEARCH_PRODUCT):  # Search Product
                 prod_name = input("\nInsert the name of the product: ")
@@ -168,8 +159,7 @@ def customer_menu(cursor, database, connection, person):
                 buy_product(database, prod_name, cursor, person, connection)
 
             elif option_ == get_value(CustomerOptions.CHECK_CREDIT):  # Check Credit
-                print(f"\nYour credit amounts to: {round(person.get_money(), 2)}")
-                input("\nPress any key to continue...")
+                input(f"\nYour credit amounts to: {round(person.get_money(), 2)}\n\nPress any key to continue...")
 
             elif option_ == get_value(CustomerOptions.ADD_CREDIT):  # Add Credit
                 credit = get_money(get_value(MoneyOptions.MIN), get_value(MoneyOptions.MAX))
@@ -179,7 +169,7 @@ def customer_menu(cursor, database, connection, person):
                 view_orders(database, cursor, person)
 
             elif option_ == get_value(CustomerOptions.DELETE_ORDERS):  # Delete Orders
-                print("\nNote: the application doesn't check if you are using a correct id")
+                input("\nNote: the application doesn't check if you are using a correct id..")
                 delete_customer_order(database, cursor, connection)
 
             elif option_ == get_value(CustomerOptions.SEARCH_ORDERS):  # Search Orders
@@ -190,7 +180,10 @@ def customer_menu(cursor, database, connection, person):
                 return
 
             else:
-                print(f"\n{option_} is not a valid option")
+                input(f"\n{option_} is not a valid option\n\nPress any key to continue...")
 
         except ValueError:
-            print("\nOption must be a number")
+            input("\nOption must be a number\n\nPress any key to continue...")
+
+        except KeyboardInterrupt:
+            shut_down(cursor, connection)

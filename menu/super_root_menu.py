@@ -3,11 +3,14 @@ from errors.handle_errors import *
 from utilities.enums import *
 from utilities.utils import get_info_person, print_admins, get_id_root, get_email, get_psw, get_money
 
+import os
+
 
 def print_admin_menu(database, cursor):
     limit = 5
     while True:
         try:
+            os.system('cls||clear')
             option = int(input("\n1)View Admins (5 at time)"
                                "\n2)Exit"
                                "\n\nInsert option (1 / 2): "))
@@ -17,22 +20,24 @@ def print_admin_menu(database, cursor):
 
                 if print_admin_errors(check):
                     print_admins(check)
+                    input("\n\nPress any key to continue...")
                     limit += 5
 
             elif option == 2:
                 return
 
             else:
-                print(f"\n{option} can not be an option")
+                input(f"\n{option} can not be an option\n\nPress any key to continue...")
 
         except ValueError:
-            print("\nOption must be a number!!")
+            input("\nOption must be a number!!\n\nPress any key to continue...")
 
 
 def search_admin_menu(database, cursor, admin_name):
     limit = 5
     while True:
         try:
+            os.system('cls||clear')
             option = int(input("\n1)View Admin"
                                "\n2)Exit"
                                "\n\nInsert option (1 / 2): "))
@@ -42,6 +47,7 @@ def search_admin_menu(database, cursor, admin_name):
 
                 if search_admin_errors(check, admin_name):
                     print_admins(check)
+                    input("\n\nPress any key to continue...")
                     limit += 5
 
                 else:
@@ -51,19 +57,17 @@ def search_admin_menu(database, cursor, admin_name):
                 return
 
             else:
-                print(f"\n{option} is not a valid option")
+                input(f"\n{option} is not a valid option\n\nPress any key to continue...")
 
         except ValueError:
-            print("\nOption must be a number!!")
+            input("\nOption must be a number!!\n\nPress any key to continue...")
 
 
 def modify_admin_menu(database, cursor, connection, id_):
     admin_id = database.get_person_id_super_root(cursor, id_)
 
     if admin_id is None:
-        print(f"\nNo admin found with the id: {id_}")
-
-        input("\nPress any key to continue...")
+        input(f"\nNo admin found with the id: {id_}\n\nPress any key to continue...")
         return
 
     elif admin_id == get_value(DatabaseErrors.CONNECTION_LOST):
@@ -72,6 +76,7 @@ def modify_admin_menu(database, cursor, connection, id_):
 
     while True:
         try:
+            os.system('cls||clear')
             option = int(input("\n1)Modify First Name"
                                "\n2)Modify Last Name"
                                "\n3)Modify Email"
@@ -91,11 +96,11 @@ def modify_admin_menu(database, cursor, connection, id_):
                                        last_name)
 
             elif option == get_value(ModifyAdminOptions.MODIFY_EMAIL):  # Modify Email
-                email = get_email(get_value(CredentialsOptions.EMAIL_MAX_LEN))
+                email = get_email(get_value(CredentialsOptions.EMAIL_MAX_LEN), cursor, connection)
                 update_email_person(database.update_person_email(cursor, connection, email, admin_id), email)
 
             elif option == get_value(ModifyAdminOptions.MODIFY_PASSWORD):  # Modify Password
-                psw = get_psw(get_value(CredentialsOptions.PSW_MAX_LEN))
+                psw = get_psw(get_value(CredentialsOptions.PSW_MAX_LEN), cursor, connection)
                 update_password_person(database.update_person_password(cursor, connection, psw, admin_id))
 
             elif option == get_value(ModifyAdminOptions.MODIFY_MONEY):  # Modify Money
@@ -106,15 +111,16 @@ def modify_admin_menu(database, cursor, connection, id_):
                 return
 
             else:
-                print(f"\n{option} is not a valid option")
+                input(f"\n{option} is not a valid option\n\nPress any key to continue...")
 
         except ValueError:
-            print("\nOption must be a number!!")
+            input("\nOption must be a number!!\n\nPress any key to continue...")
 
 
 def super_root_menu(database, cursor, connection):
     while True:
         try:
+            os.system('cls||clear')
             option = int(input("\n1)Add Admin"
                                "\n2)Delete Admin"
                                "\n3)Search Admin"
@@ -124,7 +130,7 @@ def super_root_menu(database, cursor, connection):
                                "\n\nInsert option (1 / 6): "))
 
             if option == get_value(SuperRootOptions.ADD_ADMIN):  # Add Admin
-                info = get_info_person()
+                info = get_info_person(cursor, connection)
                 if add_admin_errors(database.add_person(cursor, info, connection), info):
                     database.add_root(cursor, connection)
 
@@ -148,7 +154,7 @@ def super_root_menu(database, cursor, connection):
                 return
 
             else:
-                print(f'\n{option} is not an option')
+                input(f'\n{option} is not an option\n\nPress any key to continue...')
 
         except ValueError:
-            print("\nOption must be a number!!")
+            input("\nOption must be a number!!\n\nPress any key to continue...")

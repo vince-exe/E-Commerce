@@ -1,5 +1,5 @@
 from utilities.enums import *
-from errors.handle_errors import signin_super_root_errors, signin_root_errors
+from errors.handle_errors import signin_super_root_errors, signin_root_errors, shut_down
 from datetime import date
 
 import os
@@ -44,57 +44,65 @@ def get_money(min_, max_):
     return money
 
 
-def get_info_admin(database, cursor):
-    log_credentials = (get_email(get_value(CredentialsOptions.EMAIL_MAX_LEN)),
-                       get_psw(get_value(CredentialsOptions.PSW_MAX_LEN)))
+def get_info_admin(database, cursor, connection):
+    log_credentials = (get_email(get_value(CredentialsOptions.EMAIL_MAX_LEN), cursor, connection),
+                       get_psw(get_value(CredentialsOptions.PSW_MAX_LEN), cursor, connection))
 
     db_credential = database.get_admin_info(cursor, log_credentials[0])
 
     return signin_root_errors(log_credentials, db_credential)
 
 
-def get_info_person():
+def get_info_person(cursor, connection):
     log_credentials = [
                        input("\nInsert the First Name: "),
                        input("\nInsert the Last Name: "),
-                       get_email(get_value(CredentialsOptions.EMAIL_MAX_LEN)),
-                       get_psw(get_value(CredentialsOptions.PSW_MAX_LEN)),
+                       get_email(get_value(CredentialsOptions.EMAIL_MAX_LEN), cursor, connection),
+                       get_psw(get_value(CredentialsOptions.PSW_MAX_LEN), cursor, connection),
                        get_money(get_value(MoneyOptions.MIN), get_value(MoneyOptions.MAX))
                        ]
 
     return log_credentials
 
 
-def get_psw_email_customer():
+def get_psw_email_customer(cursor, connection):
     log_credentials = [
-                      get_email(get_value(CredentialsOptions.EMAIL_MAX_LEN)),
-                      get_psw(get_value(CredentialsOptions.PSW_MAX_LEN))
+                      get_email(get_value(CredentialsOptions.EMAIL_MAX_LEN), cursor, connection),
+                      get_psw(get_value(CredentialsOptions.PSW_MAX_LEN), cursor, connection)
                       ]
 
     return log_credentials
 
 
-def get_super_root_info(database, cursor):
-    log_credentials = (get_email(get_value(CredentialsOptions.EMAIL_MAX_LEN)),
-                       get_psw(get_value(CredentialsOptions.PSW_MAX_LEN)))
+def get_super_root_info(database, cursor, connection):
+    log_credentials = (get_email(get_value(CredentialsOptions.EMAIL_MAX_LEN), cursor, connection),
+                       get_psw(get_value(CredentialsOptions.PSW_MAX_LEN), cursor, connection))
 
     db_credentials = database.get_super_root(cursor)
 
     return signin_super_root_errors(log_credentials, db_credentials)
 
 
-def get_email(max_len):
+def get_email(max_len, cursor, connection):
     while True:
-        email_ = input("\nInsert the email: ")
+        try:
+            email_ = input("\nInsert the email: ")
 
-        if email_.endswith("@gmail.com") and len(email_) < max_len:
-            return email_
+            if email_.endswith("@gmail.com") and len(email_) < max_len:
+                return email_
+
+        except KeyboardInterrupt:
+            shut_down(cursor, connection)
 
 
-def get_psw(max_len):
+def get_psw(max_len, cursor, connection):
     psw = ''
     while len(psw) <= 0 or len(psw) > max_len:
-        psw = input("\nInsert the password: ")
+        try:
+            psw = input("\nInsert the password: ")
+
+        except KeyboardInterrupt:
+            shut_down(cursor, connection)
 
     return psw
 
@@ -161,13 +169,14 @@ def get_id_root():
     id_ = -1
     while id_ <= 1:
         try:
+            os.system('cls||clear')
             id_ = int(input("\nInsert the id: "))
 
             if id_ == 1:
-                print("\nCan not effectuate any action on the super root id!!")
+                input("\nCan not effectuate any action on the super root id!!\n\nPress any key to continue...")
 
         except ValueError:
-            print("\nId must be a number!!")
+            input("\nId must be a number!!\n\nPress any key to continue...")
 
     return id_
 
@@ -185,7 +194,7 @@ def get_prod_qnt():
     return qnt
 
 
-def get_prod_price(max_):
+def get_prod_price(max_, cursor, connection):
     price = 0
     while price <= 0 or price > max_:
         try:
@@ -194,6 +203,9 @@ def get_prod_price(max_):
 
         except ValueError:
             input("\nPrice must be a number!")
+
+        except KeyboardInterrupt:
+            shut_down(cursor, connection)
 
     return price
 
