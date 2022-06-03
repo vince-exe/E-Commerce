@@ -1,17 +1,14 @@
-import enum
-
-
-class StringOptions(enum.Enum):
+class StringOptions:
     MAX_LEN_STRING = 256
     MIN_LEN_STRING = 0
 
 
-class CredentialsOptions(enum.Enum):
+class CredentialsOptions:
     EMAIL_MAX_LEN = 20
     PSW_MAX_LEN = 32
 
 
-class AdminOptions(enum.Enum):
+class AdminOptions:
     VIEW_CUSTOMERS = 1
     VIEW_PRODUCTS = 2
     ADD_PRODUCT = 3
@@ -24,7 +21,7 @@ class AdminOptions(enum.Enum):
     EXIT_LOG = 2
 
 
-class CustomerOptions(enum.Enum):
+class CustomerOptions:
     VIEW_PRODUCTS = 1
     SEARCH_PRODUCT = 2
     BUY_PRODUCT = 3
@@ -36,7 +33,7 @@ class CustomerOptions(enum.Enum):
     EXIT = 9
 
 
-class SuperRootOptions(enum.Enum):
+class SuperRootOptions:
     ADD_ADMIN = 1
     DELETE_ADMIN = 2
     SEARCH_ADMIN = 3
@@ -45,17 +42,17 @@ class SuperRootOptions(enum.Enum):
     EXIT = 6
 
 
-class PriceOptions(enum.Enum):
+class PriceOptions:
     MIN = 0.99
     MAX = 9999.00
 
 
-class QntOptions(enum.Enum):
+class QntOptions:
     MIN = 1
     MAX = 9999
 
 
-class DatabaseErrors(enum.Enum):
+class DatabaseErrors:
     NAME_ALREADY_EXIST = 0
     CONNECTION_LOST = -1
     ACCESS_DENIED = -2
@@ -66,7 +63,7 @@ class DatabaseErrors(enum.Enum):
     NO_ADMIN_FOUND = -7
 
 
-class ModifyAdminOptions(enum.Enum):
+class ModifyAdminOptions:
     MODIFY_FIRST_NAME = 1
     MODIFY_LAST_NAME = 2
     MODIFY_EMAIL = 3
@@ -75,22 +72,28 @@ class ModifyAdminOptions(enum.Enum):
     EXIT = 6
 
 
-class GeneralOptions(enum.Enum):
+class GeneralOptions:
     SIGN_IN = 1
     SIGN_UP = 2
     EXIT = 3
 
 
-class GeneralMenuOptions(enum.Enum):
+class GeneralMenuOptions:
     LOG_AS_ADMIN = 1
     LOG_AS_CUSTOMER = 2
     EXIT = 3
 
 
-class MoneyOptions(enum.Enum):
+class MoneyOptions:
     MIN = 5
     MAX = 100000000
 
 
-def get_value(enum_value):
-    return enum_value.value
+class Colors:
+    GREEN = "\u001b[32m"
+    RESET = "\u001b[0m"
+    MAGENTA = "\u001b[35m"
+    RED = "\u001b[31m"
+    YELLOW = "\u001b[33m"
+    BLU = "\033[94m"
+    BOLD = "\033[1m"

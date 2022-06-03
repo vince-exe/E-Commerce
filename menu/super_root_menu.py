@@ -70,7 +70,7 @@ def modify_admin_menu(database, id_):
         input(f"\nNo admin found with the id: {id_}\n\nPress any key to continue...")
         return
 
-    elif admin_id == get_value(DatabaseErrors.CONNECTION_LOST):
+    elif admin_id == DatabaseErrors.CONNECTION_LOST:
         conn_lost_msg()
         return
 
@@ -85,27 +85,27 @@ def modify_admin_menu(database, id_):
                                "\n6)Exit"
                                "\n\nInsert option (1 / 6): "))
 
-            if option == get_value(ModifyAdminOptions.MODIFY_FIRST_NAME):  # Modify First Name
+            if option == ModifyAdminOptions.MODIFY_FIRST_NAME:  # Modify First Name
                 first_name = input("\nInsert The First Name: ")
                 update_firstname_person(database.update_person_first_name(first_name, admin_id), first_name)
 
-            elif option == get_value(ModifyAdminOptions.MODIFY_LAST_NAME):  # Modify Last Name
+            elif option == ModifyAdminOptions.MODIFY_LAST_NAME:  # Modify Last Name
                 last_name = input("\nInsert the Last Name: ")
                 update_lastname_person(database.update_person_last_name(last_name, admin_id), last_name)
 
-            elif option == get_value(ModifyAdminOptions.MODIFY_EMAIL):  # Modify Email
-                email = get_email(get_value(CredentialsOptions.EMAIL_MAX_LEN),)
+            elif option == ModifyAdminOptions.MODIFY_EMAIL:  # Modify Email
+                email = get_email(CredentialsOptions.EMAIL_MAX_LEN)
                 update_email_person(database.update_person_email(email, admin_id), email)
 
-            elif option == get_value(ModifyAdminOptions.MODIFY_PASSWORD):  # Modify Password
-                psw = get_psw(get_value(CredentialsOptions.PSW_MAX_LEN))
+            elif option == ModifyAdminOptions.MODIFY_PASSWORD:  # Modify Password
+                psw = get_psw(CredentialsOptions.PSW_MAX_LEN)
                 update_password_person(database.update_person_password(psw, admin_id))
 
-            elif option == get_value(ModifyAdminOptions.MODIFY_MONEY):  # Modify Money
-                money = get_money(get_value(MoneyOptions.MIN), get_value(MoneyOptions.MAX))
+            elif option == ModifyAdminOptions.MODIFY_MONEY:  # Modify Money
+                money = get_money(MoneyOptions.MIN, MoneyOptions.MAX)
                 update_money_person(database.update_person_money(money, admin_id))
 
-            elif option == get_value(ModifyAdminOptions.EXIT):  # Exit
+            elif option == ModifyAdminOptions.EXIT:  # Exit
                 return
 
             else:
@@ -119,36 +119,36 @@ def super_root_menu(database):
     while True:
         try:
             os.system('cls||clear')
-            option = int(input("\n1)Add Admin"
-                               "\n2)Delete Admin"
-                               "\n3)Search Admin"
-                               "\n4)Modify Admin"
-                               "\n5)View Admins"
-                               "\n6)Exit"
-                               "\n\nInsert option (1 / 6): "))
+            option = int(input(f"{Colors.BLU}{Colors.BOLD}\n1) Add Admin"
+                               f"{Colors.BLU}{Colors.BOLD}\n2) Delete Admin"
+                               f"{Colors.BLU}{Colors.BOLD}\n3) Search Admin"
+                               f"{Colors.BLU}{Colors.BOLD}\n4) Modify Admin"
+                               f"{Colors.BLU}{Colors.BOLD}\n5) View Admins"
+                               f"{Colors.BLU}{Colors.BOLD}\n6) Exit"
+                               f"\n\nInsert option (1 / 6): "))
 
-            if option == get_value(SuperRootOptions.ADD_ADMIN):  # Add Admin
+            if option == SuperRootOptions.ADD_ADMIN:  # Add Admin
                 info = get_info_person()
                 if add_admin_errors(database.add_person(info), info):
                     database.add_root()
 
-            elif option == get_value(SuperRootOptions.DELETE_ADMIN):  # Delete Admin
+            elif option == SuperRootOptions.DELETE_ADMIN:  # Delete Admin
                 id_ = get_id_root()
                 delete_admin_errors(database.delete_admin(id_), id_)
 
-            elif option == get_value(SuperRootOptions.SEARCH_ADMIN):  # Search Admin
+            elif option == SuperRootOptions.SEARCH_ADMIN:  # Search Admin
                 admin_name = input("\nInsert the name: ")
                 search_admin_menu(database, admin_name)
 
-            elif option == get_value(SuperRootOptions.MODIFY_ADMIN):  # Modify Admin
+            elif option == SuperRootOptions.MODIFY_ADMIN:  # Modify Admin
                 id_ = get_id_root()
                 modify_admin_menu(database, id_)
                 pass
 
-            elif option == get_value(SuperRootOptions.VIEW_ADMINS):  # View Admins
+            elif option == SuperRootOptions.VIEW_ADMINS:  # View Admins
                 print_admin_menu(database)
 
-            elif option == get_value(SuperRootOptions.EXIT):  # Exit
+            elif option == SuperRootOptions.EXIT:  # Exit
                 return
 
             else:

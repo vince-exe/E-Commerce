@@ -14,11 +14,11 @@ def buy_product(database, prod_name, person):
 
     check = database.rmv_qnt_product(prod_name)
 
-    if check == get_value(DatabaseErrors.CONNECTION_LOST):
+    if check == DatabaseErrors.CONNECTION_LOST:
         input("\nThe application has lost the connection with the server\n\nPress any key to continue...")
         return
 
-    elif check == get_value(DatabaseErrors.OUT_OF_STOCK):
+    elif check == DatabaseErrors.OUT_OF_STOCK:
         input("\nthe product is out of stock\n\nPress any key to continue...")
         return
 
@@ -49,7 +49,7 @@ def view_orders(database, person):
     limit = 5
 
     customer_id = database.get_customer_id(person.get_id())
-    if customer_id == get_value(DatabaseErrors.CONNECTION_LOST):
+    if customer_id == DatabaseErrors.CONNECTION_LOST:
         input("\nThe application has lost the connection with the server\n\nPress any key to continue...")
         return
 
@@ -89,7 +89,7 @@ def view_orders(database, person):
 def search_order_menu(database, prod_name, person):
     customer_id = database.get_customer_id(person.get_id())
 
-    if customer_id == get_value(DatabaseErrors.CONNECTION_LOST):
+    if customer_id == DatabaseErrors.CONNECTION_LOST:
         input("\nThe application has lost the connection with the server\n\nPress any key to continue...")
         return
 
@@ -125,7 +125,7 @@ def search_order_menu(database, prod_name, person):
 def delete_customer_order(database):
     id_ = get_order_id()
 
-    if database.delete_order(id_) == get_value(DatabaseErrors.CONNECTION_LOST):
+    if database.delete_order(id_) == DatabaseErrors.CONNECTION_LOST:
         input("\nThe application has lost the connection with the server\n\nPress any key to continue...")
         return
 
@@ -147,36 +147,36 @@ def customer_menu(database, person):
                                 "\n9)Exit"
                                 "\n\nInsert option (1 / 9): "))
 
-            if option_ == get_value(CustomerOptions.VIEW_PRODUCTS):  # View Orders
+            if option_ == CustomerOptions.VIEW_PRODUCTS:  # View Orders
                 view_products_menu(database)
 
-            elif option_ == get_value(CustomerOptions.SEARCH_PRODUCT):  # Search Product
+            elif option_ == CustomerOptions.SEARCH_PRODUCT:  # Search Product
                 prod_name = input("\nInsert the name of the product: ")
                 view_product_searched(database, prod_name)
 
-            elif option_ == get_value(CustomerOptions.BUY_PRODUCT):  # Buy Product
+            elif option_ == CustomerOptions.BUY_PRODUCT:  # Buy Product
                 prod_name = input("\nInsert the name of the product: ")
                 buy_product(database, prod_name, person)
 
-            elif option_ == get_value(CustomerOptions.CHECK_CREDIT):  # Check Credit
+            elif option_ == CustomerOptions.CHECK_CREDIT:  # Check Credit
                 input(f"\nYour credit amounts to: {round(person.get_money(), 2)}\n\nPress any key to continue...")
 
-            elif option_ == get_value(CustomerOptions.ADD_CREDIT):  # Add Credit
-                credit = get_money(get_value(MoneyOptions.MIN), get_value(MoneyOptions.MAX))
+            elif option_ == CustomerOptions.ADD_CREDIT:  # Add Credit
+                credit = get_money(MoneyOptions.MIN, MoneyOptions.MAX)
                 add_money(database, person, credit)
 
-            elif option_ == get_value(CustomerOptions.VIEW_ORDERS):  # View Orders
+            elif option_ == CustomerOptions.VIEW_ORDERS:  # View Orders
                 view_orders(database, person)
 
-            elif option_ == get_value(CustomerOptions.DELETE_ORDERS):  # Delete Orders
+            elif option_ == CustomerOptions.DELETE_ORDERS:  # Delete Orders
                 input("\nNote: the application doesn't check if you are using a correct id..")
                 delete_customer_order(database)
 
-            elif option_ == get_value(CustomerOptions.SEARCH_ORDERS):  # Search Orders
+            elif option_ == CustomerOptions.SEARCH_ORDERS:  # Search Orders
                 product_name = input("\nInsert the product name: ")
                 search_order_menu(database, product_name, person)
 
-            elif option_ == get_value(CustomerOptions.EXIT):  # Exit
+            elif option_ == CustomerOptions.EXIT:  # Exit
                 return
 
             else:

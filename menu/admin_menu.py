@@ -11,19 +11,21 @@ def view_customers_menu(database):
     while True:
         try:
             os.system('cls||clear')
-            option = int(input("\n1)Show Customers (5 at time)"
-                               "\n2)Exit"
-                               "\n\nInsert option (1 / 2): "))
+            option = int(input(f"{Colors.BLU}{Colors.BOLD}\n1) {Colors.RESET}Show Customers (5 at time)"
+                               f"{Colors.BLU}{Colors.BOLD}\n2){Colors.RESET} Exit"
+                               f"\n\nInsert option (1 / 2): {Colors.BLU}{Colors.BOLD}"))
+
+            print(f"{Colors.RESET}")
 
             if option == 1:
                 customers = database.get_customers(limit)
 
-                if customers == get_value(DatabaseErrors.CONNECTION_LOST):
-                    input("""\nThe application has lost the connection with the database
-                                  \n\nPress any key to continue...""")
+                if customers == DatabaseErrors.CONNECTION_LOST:
+                    conn_lost_msg()
 
                 elif not len(customers):
-                    input("\nThere are no customers registered\n\nPress any key to continue...")
+                    input(f"{Colors.YELLOW}{Colors.BOLD}\nThere are no customers registered\n\n"
+                          f"{Colors.RESET}Press any key to continue...")
 
                 else:
                     print_customers(customers)
@@ -35,13 +37,14 @@ def view_customers_menu(database):
 
             else:
                 try:
-                    input(f'\n{option} is not a valid option\n\nPress any key to continue...')
+                    input(f"\n{Colors.BLU}{Colors.BOLD}{option} {Colors.RED}{Colors.BOLD}is not a correct option!!"
+                          f"\n\n{Colors.RESET}Press any key to continue...")
 
                 except KeyboardInterrupt:
                     database.shut_down()
 
         except ValueError:
-            input("\nOption must be a number!!\n\nPress any key to continue...")
+            input(f"\n{Colors.RED}{Colors.BOLD}Option must be a number\n\n{Colors.RESET}Press any key to continue...")
 
 
 def view_products_menu(database):
@@ -50,13 +53,15 @@ def view_products_menu(database):
         try:
             os.system('cls||clear')
 
-            option = int(input("\n1)View Products (5 at time)"
-                               "\n2)Exit"
-                               "\n\nInsert option (1 / 2): "))
+            option = int(input(f"{Colors.BLU}{Colors.BOLD}\n1) {Colors.RESET}View Products (5 at time)"
+                               f"{Colors.BLU}{Colors.BOLD}\n2) {Colors.RESET}Exit"
+                               f"\n\nInsert option (1 / 2): {Colors.BLU}{Colors.BOLD}"))
+
+            print(f"{Colors.RESET}")
 
             if option == 1:
                 products = database.get_products(limit)
-                if products == get_value(DatabaseErrors.CONNECTION_LOST):
+                if products == DatabaseErrors.CONNECTION_LOST:
                     try:
                         input("""\nThe application has lost the connection with the server
                                   \n\nPress any key to continue...""")
@@ -232,7 +237,7 @@ def modify_product(database):
                 update_qnt_errors(database.update_qnt_product(prod_id, get_prod_qnt()))
 
             elif option == 3:
-                database.update_price_product(prod_id, get_prod_price(get_value(PriceOptions.MAX)))
+                database.update_price_product(prod_id, get_prod_price(PriceOptions.MAX))
 
             elif option == 4:
                 return
@@ -248,56 +253,59 @@ def admin_menu(database):
     while True:
         os.system('cls||clear')
         try:
-            option = int(input(("\n1)View All Customers"
-                                "\n2)View All Products"
-                                "\n3)Add Product"
-                                "\n4)Modify Product"
-                                "\n5)Search Product (info)"
-                                "\n6)Delete Product"
-                                "\n7)Delete Customer"
-                                "\n8)Search Customer"
-                                "\n9)Exit"
-                                "\n\nInsert option (1 / 9): "
+            option = int(input((f"{Colors.BLU}{Colors.BOLD}\n1) {Colors.RESET}View All Customers"
+                                f"{Colors.BLU}{Colors.BOLD}\n2) {Colors.RESET}View All Products"
+                                f"{Colors.BLU}{Colors.BOLD}\n3) {Colors.RESET}Add Product"
+                                f"{Colors.BLU}{Colors.BOLD}\n4) {Colors.RESET}Modify Product"
+                                f"{Colors.BLU}{Colors.BOLD}\n5) {Colors.RESET}Search Product (info)"
+                                f"{Colors.BLU}{Colors.BOLD}\n6) {Colors.RESET}Delete Product"
+                                f"{Colors.BLU}{Colors.BOLD}\n7) {Colors.RESET}Delete Customer"
+                                f"{Colors.BLU}{Colors.BOLD}\n8) {Colors.RESET}Search Customer"
+                                f"{Colors.BLU}{Colors.BOLD}\n9) {Colors.RESET}Exit"
+                                f"\n\n{Colors.RESET}Insert option (1 / 9): {Colors.BLU}{Colors.BOLD}"
                                 )))
 
-            if option == get_value(AdminOptions.VIEW_CUSTOMERS):  # View Customers
+            print(f"{Colors.RESET}")
+
+            if option == AdminOptions.VIEW_CUSTOMERS:  # View Customers
                 view_customers_menu(database)
 
-            elif option == get_value(AdminOptions.VIEW_PRODUCTS):  # View Products
+            elif option == AdminOptions.VIEW_PRODUCTS:  # View Products
                 view_products_menu(database)
 
-            elif option == get_value(AdminOptions.ADD_PRODUCT):  # Add Product
+            elif option == AdminOptions.ADD_PRODUCT:  # Add Product
                 prod_info = get_product_info()
                 add_prod_errors(database.add_product(prod_info), prod_info)
 
-            elif option == get_value(AdminOptions.MODIFY_PRODUCT):  # Modify Product
+            elif option == AdminOptions.MODIFY_PRODUCT:  # Modify Product
                 input("\n\nNote: The application doesn't check if you are using the correct id..")
                 modify_product(database)
 
-            elif option == get_value(AdminOptions.SEARCH_PRODUCT):  # Search Product
+            elif option == AdminOptions.SEARCH_PRODUCT:  # Search Product
                 prod_name = input("\nInsert the name of the product: ")
                 view_product_searched(database, prod_name)
 
-            elif option == get_value(AdminOptions.DELETE_PRODUCT):  # Delete Product
+            elif option == AdminOptions.DELETE_PRODUCT:  # Delete Product
                 input("\n\nNote: The application doesn't check if you are using the correct id..")
                 delete_product_menu(database)
 
-            elif option == get_value(AdminOptions.DELETE_CUSTOMER):  # Delete Customer
+            elif option == AdminOptions.DELETE_CUSTOMER:  # Delete Customer
                 input("\n\nNote: The application doesn't check if you are using the correct id..")
                 delete_customer_menu(database)
 
-            elif option == get_value(AdminOptions.SEARCH_CUSTOMER):  # Search Customer
+            elif option == AdminOptions.SEARCH_CUSTOMER:  # Search Customer
                 customer_name = input("\nInsert the customer name: ")
                 search_customer_menu(database, customer_name)
 
-            elif option == get_value(AdminOptions.EXIT):  # Exit
+            elif option == AdminOptions.EXIT:  # Exit
                 return
 
             else:
-                input(f"{option} is not a valid option...")
+                input(f"\n{Colors.BLU}{Colors.BOLD}{option} {Colors.RED}{Colors.BOLD}is not a correct option!!"
+                      f"\n\n{Colors.RESET}Press any key to continue...")
 
         except ValueError:
-            input("\nOption must be a number!")
+            input(f"\n{Colors.RED}{Colors.BOLD}Option must be a number\n\n{Colors.RESET}Press any key to continue...")
 
         except KeyboardInterrupt:
             database.shut_down()
