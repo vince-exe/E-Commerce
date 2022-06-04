@@ -36,15 +36,15 @@ def view_customers_menu(database):
                 return
 
             else:
-                try:
-                    input(f"\n{Colors.BLU}{Colors.BOLD}{option} {Colors.RED}{Colors.BOLD}is not a correct option!!"
-                          f"\n\n{Colors.RESET}Press any key to continue...")
-
-                except KeyboardInterrupt:
-                    database.shut_down()
+                input(f"\n{Colors.BLU}{Colors.BOLD}{option} {Colors.RED}{Colors.BOLD}is not a correct option!!"
+                      f"\n\n{Colors.RESET}Press any key to continue...")
 
         except ValueError:
             input(f"\n{Colors.RED}{Colors.BOLD}Option must be a number\n\n{Colors.RESET}Press any key to continue...")
+
+        except KeyboardInterrupt:
+            database.shut_down()
+            exit(0)
 
 
 def view_products_menu(database):
@@ -62,34 +62,26 @@ def view_products_menu(database):
             if option == 1:
                 products = database.get_products(limit)
                 if products == DatabaseErrors.CONNECTION_LOST:
-                    try:
-                        input("""\nThe application has lost the connection with the server
-                                  \n\nPress any key to continue...""")
-
-                    except KeyboardInterrupt:
-                        database.shut_down()
+                    conn_lost_msg()
 
                 else:
-                    try:
-                        print_products(products)
-                        input("\nPress any key to continue...")
-                        limit += 5
-
-                    except KeyboardInterrupt:
-                        database.shut_down()
+                    print_products(products)
+                    input("\nPress any key to continue...")
+                    limit += 5
 
             elif option == 2:
                 return
 
             else:
-                try:
-                    input(f'\n{option} is not a valid option\n\nPress any key to continue...')
-
-                except KeyboardInterrupt:
-                    database.shut_down()
+                input(f"\n{Colors.BLU}{Colors.BOLD}{option} {Colors.RED}{Colors.BOLD}is not a correct option!!"
+                      f"\n\n{Colors.RESET}Press any key to continue...")
 
         except ValueError:
-            input("\nOption must be a number!!\n\nPress any key to continue...")
+            input(f"\n{Colors.RED}{Colors.BOLD}Option must be a number\n\n{Colors.RESET}Press any key to continue...")
+
+        except KeyboardInterrupt:
+            database.shut_down()
+            exit(0)
 
 
 def view_product_searched(database, prod_name):
@@ -98,9 +90,11 @@ def view_product_searched(database, prod_name):
     while True:
         try:
             os.system('cls||clear')
-            option = int(input("\n1)View Products (5 at time)"
-                               "\n2)Exit"
-                               "\n\nInsert option (1 / 2): "))
+            option = int(input(f"{Colors.BLU}{Colors.BOLD}\n1) {Colors.RESET}View Products (5 at time)"
+                               f"{Colors.BLU}{Colors.BOLD}\n2) {Colors.RESET}Exit"
+                               f"\n\nInsert option (1 / 2): {Colors.BLU}{Colors.BOLD}"))
+
+            print(f"{Colors.RESET}")
 
             if option == 1:
                 if not prod_searched_errors(database.get_product_searched(prod_name, limit), prod_name):
@@ -115,74 +109,97 @@ def view_product_searched(database, prod_name):
                 return
 
             else:
-                input(f'\n{option} is not an option\n\nPress any key to continue...')
+                input(f"\n{Colors.BLU}{Colors.BOLD}{option} {Colors.RED}{Colors.BOLD}is not a correct option!!"
+                      f"\n\n{Colors.RESET}Press any key to continue...")
 
         except ValueError:
-            print("\nOption must be a number\n\nPress any key to continue...")
+            input(f"\n{Colors.RED}{Colors.BOLD}Option must be a number\n\n{Colors.RESET}Press any key to continue...")
+
+        except KeyboardInterrupt:
+            database.shut_down()
+            exit(0)
 
 
 def delete_product_menu(database):
     while True:
         try:
             os.system('cls||clear')
-            option = int(input("\n1)Delete Product"
-                               "\n2)Exit"
-                               "\n\nInsert option (1 /2): "
+            option = int(input(f"{Colors.BLU}{Colors.BOLD}\n1) {Colors.RESET}Delete Product"
+                               f"{Colors.BLU}{Colors.BOLD}\n2) {Colors.RESET}Exit"
+                               f"\n\nInsert option (1 /2): {Colors.BLU}{Colors.BOLD}"
                                )
                          )
+
+            print(f"{Colors.RESET}")
 
             if option == 1:
                 while True:
                     try:
                         os.system('cls||clear')
-                        id_ = int(input("\nInsert the product id: "))
+                        id_ = int(input(f"{Colors.BLU}{Colors.BOLD}\nProduct Id: {Colors.RESET}"))
                         break
                     except ValueError:
-                        input("\nId must be a number!!\n\nPress any key to continue...")
+                        input(f"{Colors.RED}{Colors.BOLD}\nERROR: {Colors.RESET}Id must be a number!!"
+                              f"\n\nPress any key to continue...")
 
                 del_prod = database.delete_product(id_)
                 if rmv_errors(del_prod):
-                    input(f"\nSuccessfully removed the product with id: {id_}\n\nPress any key to continue...")
+                    input(f"{Colors.GREEN}{Colors.BOLD}\nSuccessfully removed the product with id: {Colors.RESET}"
+                          f"[{id_}]\n\nPress any key to continue...")
 
             elif option == 2:
                 return
 
             else:
-                input(f'\n{option} is not a valid option\n\nPress any key to continue...')
+                input(f"\n{Colors.BLU}{Colors.BOLD}{option} {Colors.RED}{Colors.BOLD}is not a correct option!!"
+                      f"\n\n{Colors.RESET}Press any key to continue...")
 
         except ValueError:
-            input("\nOption must be a number!!\n\nPress any key to continue...")
+            input(f"\n{Colors.RED}{Colors.BOLD}Option must be a number\n\n{Colors.RESET}Press any key to continue...")
+
+        except KeyboardInterrupt:
+            database.shutdown()
+            exit(0)
 
 
 def delete_customer_menu(database):
     while True:
         try:
             os.system('cls||clear')
-            option = int(input("\n1)Delete Customer"
-                               "\n2)Exit"
-                               "\n\nInsert option (1 / 2): "
+            option = int(input(f"{Colors.BLU}{Colors.BOLD}\n1) {Colors.RESET}Delete Customer"
+                               f"{Colors.BLU}{Colors.BOLD}\n2) {Colors.RESET}Exit"
+                               f"\n\nInsert option (1 / 2): {Colors.BLU}{Colors.BOLD}"
                                )
                          )
 
             if option == 1:
                 while True:
                     try:
-                        id_ = int(input("\nInsert the customer id: "))
+                        id_ = int(input(f"{Colors.BLU}{Colors.BOLD}\nCustomer Id: {Colors.RESET}"))
                         break
+
                     except ValueError:
-                        input("\nId must be a number!!\n\nPress any key to continue...")
+                        input(f"{Colors.RED}{Colors.BOLD}\nERROR: {Colors.RESET}Id must be a number!!"
+                              f"\n\nPress any key to continue...")
 
                 if rmv_errors(database.delete_customer(id_)):
-                    input(f"\nSuccessfully removed the customer with id: {id_}\n\nPress any key to continue...")
+                    input(f"{Colors.GREEN}{Colors.BOLD}\nSuccessfully removed the customer with id: {Colors.RESET}"
+                          f"[{id_}]"
+                          f"\n\nPress any key to continue...")
 
             elif option == 2:
                 return
 
             else:
-                input(f"\n{option} is not a valid option\n\nPress any key to continue...")
+                input(f"\n{Colors.BLU}{Colors.BOLD}{option} {Colors.RED}{Colors.BOLD}is not a correct option!!"
+                      f"\n\n{Colors.RESET}Press any key to continue...")
 
         except ValueError:
-            input("\nOption must be a number!!\n\nPress any key to continue...")
+            input(f"\n{Colors.RED}{Colors.BOLD}Option must be a number\n\n{Colors.RESET}Press any key to continue...")
+
+        except KeyboardInterrupt:
+            database.shut_down()
+            exit(0)
 
 
 def search_customer_menu(database, customer_name):
@@ -191,9 +208,11 @@ def search_customer_menu(database, customer_name):
     while True:
         try:
             os.system('cls||clear')
-            option = int(input("\n1)View Customer"
-                               "\n2)Exit"
-                               "\n\nInsert option (1 / 2): "))
+            option = int(input(f"{Colors.BLU}{Colors.BOLD}\n1) {Colors.RESET}View Customer"
+                               f"{Colors.BLU}{Colors.BOLD}\n2) {Colors.RESET}Exit"
+                               f"\n\nInsert option (1 / 2): {Colors.BLU}{Colors.BOLD}"))
+
+            print(f"{Colors.RESET}")
 
             if option == 1:
                 if customer_searched_errors(database.get_customer_searched(customer_name, limit),
@@ -210,10 +229,15 @@ def search_customer_menu(database, customer_name):
                 return
 
             else:
-                input(f"\n{option} is not a valid option\n\nPress any key to continue...")
+                input(f"\n{Colors.BLU}{Colors.BOLD}{option} {Colors.RED}{Colors.BOLD}is not a correct option!!"
+                      f"\n\n{Colors.RESET}Press any key to continue...")
 
         except ValueError:
-            input("\nOption must be a number!!\n\nPress any key to continue...")
+            input(f"\n{Colors.RED}{Colors.BOLD}Option must be a number\n\n{Colors.RESET}Press any key to continue...")
+
+        except KeyboardInterrupt:
+            database.shutdown()
+            exit(0)
 
 
 def modify_product(database):
@@ -222,31 +246,38 @@ def modify_product(database):
     while True:
         try:
             os.system('cls||clear')
-            option = int(input("\n1)Change Name"
-                               "\n2)Change Quantity"
-                               "\n3)Change Price"
-                               "\n4)Exit"
-                               "\n\nInsert option (1 / 4): "))
+            option = int(input(f"{Colors.BLU}{Colors.BOLD}\n1) {Colors.RESET}Change Name"
+                               f"{Colors.BLU}{Colors.BOLD}\n2) {Colors.RESET}Change Quantity"
+                               f"{Colors.BLU}{Colors.BOLD}\n3) {Colors.RESET}Change Price"
+                               f"{Colors.BLU}{Colors.BOLD}\n4) {Colors.RESET}Exit"
+                               f"\n\nInsert option (1 / 4): {Colors.BLU}{Colors.BOLD}"))
+
+            print(f"{Colors.RESET}")
 
             if option == 1:
                 os.system('cls||clear')
-                prod_name = input("\nInsert the new name: ")
+                prod_name = input(f"{Colors.BLU}{Colors.BOLD}\nNew Name: {Colors.RESET}")
                 update_name_product_errors(database.update_name_product(prod_id, prod_name), prod_name)
 
             elif option == 2:
                 update_qnt_errors(database.update_qnt_product(prod_id, get_prod_qnt()))
 
             elif option == 3:
-                database.update_price_product(prod_id, get_prod_price(PriceOptions.MAX))
+                update_price_errors(database.update_price_product(prod_id, get_prod_price(PriceOptions.MAX)))
 
             elif option == 4:
                 return
 
             else:
-                input(f'\n{option} is not an option...')
+                input(f"\n{Colors.BLU}{Colors.BOLD}{option} {Colors.RED}{Colors.BOLD}is not a correct option!!"
+                      f"\n\n{Colors.RESET}Press any key to continue...")
 
         except ValueError:
-            input("\nOption must be a number!!")
+            input(f"\n{Colors.RED}{Colors.BOLD}Option must be a number\n\n{Colors.RESET}Press any key to continue...")
+
+        except KeyboardInterrupt:
+            database.shutdown()
+            exit(0)
 
 
 def admin_menu(database):
@@ -278,23 +309,26 @@ def admin_menu(database):
                 add_prod_errors(database.add_product(prod_info), prod_info)
 
             elif option == AdminOptions.MODIFY_PRODUCT:  # Modify Product
-                input("\n\nNote: The application doesn't check if you are using the correct id..")
+                input(f"{Colors.GREEN}{Colors.BOLD}\n\nNote: {Colors.RESET}"
+                      f"The application doesn't check if you are using the correct id..")
                 modify_product(database)
 
             elif option == AdminOptions.SEARCH_PRODUCT:  # Search Product
-                prod_name = input("\nInsert the name of the product: ")
+                prod_name = input(f"{Colors.BLU}{Colors.BOLD}\nProduct Name: {Colors.RESET}")
                 view_product_searched(database, prod_name)
 
             elif option == AdminOptions.DELETE_PRODUCT:  # Delete Product
-                input("\n\nNote: The application doesn't check if you are using the correct id..")
+                input(f"{Colors.GREEN}{Colors.BOLD}\n\nNote: {Colors.RESET}"
+                      f"The application doesn't check if you are using the correct id..")
                 delete_product_menu(database)
 
             elif option == AdminOptions.DELETE_CUSTOMER:  # Delete Customer
-                input("\n\nNote: The application doesn't check if you are using the correct id..")
+                input(f"{Colors.GREEN}{Colors.BOLD}\n\nNote: {Colors.RESET}"
+                      f"The application doesn't check if you are using the correct id..")
                 delete_customer_menu(database)
 
             elif option == AdminOptions.SEARCH_CUSTOMER:  # Search Customer
-                customer_name = input("\nInsert the customer name: ")
+                customer_name = input(f"{Colors.BLU}{Colors.BOLD}\nCustomer Name: {Colors.RESET}")
                 search_customer_menu(database, customer_name)
 
             elif option == AdminOptions.EXIT:  # Exit
@@ -309,3 +343,4 @@ def admin_menu(database):
 
         except KeyboardInterrupt:
             database.shut_down()
+            exit(0)

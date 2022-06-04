@@ -11,9 +11,11 @@ def print_admin_menu(database):
     while True:
         try:
             os.system('cls||clear')
-            option = int(input("\n1)View Admins (5 at time)"
-                               "\n2)Exit"
-                               "\n\nInsert option (1 / 2): "))
+            option = int(input(f"{Colors.BLU}{Colors.BOLD}\n1) {Colors.RESET}View Admins (5 at time)"
+                               f"{Colors.BLU}{Colors.BOLD}\n2) {Colors.RESET}Exit"
+                               f"\n\nInsert option (1 / 2): {Colors.BLU}{Colors.BOLD}"))
+
+            print(f"{Colors.RESET}")
 
             if option == 1:
                 check = database.get_admins(limit)
@@ -27,10 +29,15 @@ def print_admin_menu(database):
                 return
 
             else:
-                input(f"\n{option} can not be an option\n\nPress any key to continue...")
+                input(f"\n{Colors.BLU}{Colors.BOLD}{option} {Colors.RED}{Colors.BOLD}is not a correct option!!"
+                      f"\n\n{Colors.RESET}Press any key to continue...")
 
         except ValueError:
-            input("\nOption must be a number!!\n\nPress any key to continue...")
+            input(f"\n{Colors.RED}{Colors.BOLD}Option must be a number\n\n{Colors.RESET}Press any key to continue...")
+
+        except KeyboardInterrupt:
+            database.shut_down()
+            exit(0)
 
 
 def search_admin_menu(database, admin_name):
@@ -38,9 +45,11 @@ def search_admin_menu(database, admin_name):
     while True:
         try:
             os.system('cls||clear')
-            option = int(input("\n1)View Admin"
-                               "\n2)Exit"
-                               "\n\nInsert option (1 / 2): "))
+            option = int(input(f"{Colors.BLU}{Colors.BOLD}\n1) {Colors.RESET}View Admin"
+                               f"{Colors.BLU}{Colors.BOLD}\n2) {Colors.RESET}Exit"
+                               f"\n\nInsert option (1 / 2): {Colors.BLU}{Colors.BOLD}"))
+
+            print(f"{Colors.RESET}")
 
             if option == 1:
                 check = database.get_admin_searched(admin_name, limit)
@@ -57,17 +66,23 @@ def search_admin_menu(database, admin_name):
                 return
 
             else:
-                input(f"\n{option} is not a valid option\n\nPress any key to continue...")
+                input(f"\n{Colors.BLU}{Colors.BOLD}{option} {Colors.RED}{Colors.BOLD}is not a correct option!!"
+                      f"\n\n{Colors.RESET}Press any key to continue...")
 
         except ValueError:
-            input("\nOption must be a number!!\n\nPress any key to continue...")
+            input(f"\n{Colors.RED}{Colors.BOLD}Option must be a number\n\n{Colors.RESET}Press any key to continue...")
+
+        except KeyboardInterrupt:
+            database.shut_down()
+            exit(0)
 
 
 def modify_admin_menu(database, id_):
     admin_id = database.get_person_id_super_root(id_)
 
     if admin_id is None:
-        input(f"\nNo admin found with the id: {id_}\n\nPress any key to continue...")
+        input(f"{Colors.RED}{Colors.BOLD}\nERROR: {Colors.RESET}No admin found with the id: [{id_}]"
+              f"\n\nPress any key to continue...")
         return
 
     elif admin_id == DatabaseErrors.CONNECTION_LOST:
@@ -77,20 +92,22 @@ def modify_admin_menu(database, id_):
     while True:
         try:
             os.system('cls||clear')
-            option = int(input("\n1)Modify First Name"
-                               "\n2)Modify Last Name"
-                               "\n3)Modify Email"
-                               "\n4)Modify Password"
-                               "\n5)Modify Money"
-                               "\n6)Exit"
-                               "\n\nInsert option (1 / 6): "))
+            option = int(input(f"{Colors.BLU}{Colors.BOLD}\n1) {Colors.RESET}Modify First Name"
+                               f"{Colors.BLU}{Colors.BOLD}\n2) {Colors.RESET}Modify Last Name"
+                               f"{Colors.BLU}{Colors.BOLD}\n3) {Colors.RESET}Modify Email"
+                               f"{Colors.BLU}{Colors.BOLD}\n4) {Colors.RESET}Modify Password"
+                               f"{Colors.BLU}{Colors.BOLD}\n5) {Colors.RESET}Modify Money"
+                               f"{Colors.BLU}{Colors.BOLD}\n6) {Colors.RESET}Exit"
+                               f"{Colors.BLU}{Colors.BOLD}\n\nInsert option (1 / 6): {Colors.BLU}{Colors.BOLD}"))
+
+            print(f"{Colors.RESET}")
 
             if option == ModifyAdminOptions.MODIFY_FIRST_NAME:  # Modify First Name
-                first_name = input("\nInsert The First Name: ")
+                first_name = input(f"{Colors.BLU}{Colors.BOLD}\nFirst Name: {Colors.RESET}")
                 update_firstname_person(database.update_person_first_name(first_name, admin_id), first_name)
 
             elif option == ModifyAdminOptions.MODIFY_LAST_NAME:  # Modify Last Name
-                last_name = input("\nInsert the Last Name: ")
+                last_name = input(f"{Colors.BLU}{Colors.BOLD}\nLast Name: {Colors.RESET}")
                 update_lastname_person(database.update_person_last_name(last_name, admin_id), last_name)
 
             elif option == ModifyAdminOptions.MODIFY_EMAIL:  # Modify Email
@@ -109,23 +126,30 @@ def modify_admin_menu(database, id_):
                 return
 
             else:
-                input(f"\n{option} is not a valid option\n\nPress any key to continue...")
+                input(f"\n{Colors.BLU}{Colors.BOLD}{option} {Colors.RED}{Colors.BOLD}is not a correct option!!"
+                      f"\n\n{Colors.RESET}Press any key to continue...")
 
         except ValueError:
-            input("\nOption must be a number!!\n\nPress any key to continue...")
+            input(f"\n{Colors.RED}{Colors.BOLD}Option must be a number\n\n{Colors.RESET}Press any key to continue...")
+
+        except KeyboardInterrupt:
+            database.shut_down()
+            exit(0)
 
 
 def super_root_menu(database):
     while True:
         try:
             os.system('cls||clear')
-            option = int(input(f"{Colors.BLU}{Colors.BOLD}\n1) Add Admin"
-                               f"{Colors.BLU}{Colors.BOLD}\n2) Delete Admin"
-                               f"{Colors.BLU}{Colors.BOLD}\n3) Search Admin"
-                               f"{Colors.BLU}{Colors.BOLD}\n4) Modify Admin"
-                               f"{Colors.BLU}{Colors.BOLD}\n5) View Admins"
-                               f"{Colors.BLU}{Colors.BOLD}\n6) Exit"
-                               f"\n\nInsert option (1 / 6): "))
+            option = int(input(f"{Colors.BLU}{Colors.BOLD}\n1) {Colors.RESET}Add Admin"
+                               f"{Colors.BLU}{Colors.BOLD}\n2) {Colors.RESET}Delete Admin"
+                               f"{Colors.BLU}{Colors.BOLD}\n3) {Colors.RESET}Search Admin"
+                               f"{Colors.BLU}{Colors.BOLD}\n4) {Colors.RESET}Modify Admin"
+                               f"{Colors.BLU}{Colors.BOLD}\n5) {Colors.RESET}View Admins"
+                               f"{Colors.BLU}{Colors.BOLD}\n6) {Colors.RESET}Exit"
+                               f"\n\nInsert option (1 / 6): {Colors.BLU}{Colors.BOLD}"))
+
+            print(f"{Colors.RESET}")
 
             if option == SuperRootOptions.ADD_ADMIN:  # Add Admin
                 info = get_info_person()
@@ -137,7 +161,7 @@ def super_root_menu(database):
                 delete_admin_errors(database.delete_admin(id_), id_)
 
             elif option == SuperRootOptions.SEARCH_ADMIN:  # Search Admin
-                admin_name = input("\nInsert the name: ")
+                admin_name = input(f"{Colors.BLU}{Colors.BOLD}\nFirst Name: {Colors.RESET}")
                 search_admin_menu(database, admin_name)
 
             elif option == SuperRootOptions.MODIFY_ADMIN:  # Modify Admin
@@ -152,7 +176,12 @@ def super_root_menu(database):
                 return
 
             else:
-                input(f'\n{option} is not an option\n\nPress any key to continue...')
+                input(f"\n{Colors.BLU}{Colors.BOLD}{option} {Colors.RED}{Colors.BOLD}is not a correct option!!"
+                      f"\n\n{Colors.RESET}Press any key to continue...")
 
         except ValueError:
-            input("\nOption must be a number!!\n\nPress any key to continue...")
+            input(f"\n{Colors.RED}{Colors.BOLD}Option must be a number\n\n{Colors.RESET}Press any key to continue...")
+
+        except KeyboardInterrupt:
+            database.shut_down()
+            exit(0)

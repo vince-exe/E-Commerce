@@ -34,18 +34,18 @@ def add_prod_errors(error, prod_info):
 
 def db_conn_errors(error, database):
     if error is None:
-        input(f"{Colors.RED}{Colors.BOLD}\nERROR: {Colors.RESET}The server is unreachable"
-              f"\n\nPress any key to continue...")
+        input(f"{Colors.RED}{Colors.BOLD}\n\t\t\t\t\tERROR: {Colors.RESET}The server is unreachable"
+              f"\n\n\t\t\t\t\t  Press any key to continue...")
         exit(-1)
 
     elif error == DatabaseErrors.ACCESS_DENIED:
-        input(f"{Colors.RED}{Colors.BOLD}\nERROR: {Colors.RESET}Something went wrong with username and password"
-              f"\n\nPress any key to continue...")
+        input(f"{Colors.RED}{Colors.BOLD}\n\t\t\t\tERROR: {Colors.RESET}Something went wrong with username and password"
+              f"\n\n\t\t\t\t\t      Press any key to continue...")
         exit(-1)
 
     elif error == DatabaseErrors.DB_EXCEPTION:
-        input(f'{Colors.RED}{Colors.BOLD}\nERROR: {Colors.RESET}There is no database with the name: [{database.db_name}]'
-              f'\n\nPress any key to continue...')
+        input(f'{Colors.RED}{Colors.BOLD}\n\t\t\t\tERROR: {Colors.RESET}There is no database with the name: [{database.db_name}]'
+              f'\n\n\t\t\t\t\t  Press any key to continue...')
         exit(-1)
 
     elif error == DatabaseErrors.CONNECTION_LOST:
@@ -121,15 +121,17 @@ def add_customer_errors(person):
 
 def prod_bought_errors(product, money):
     if product is None:
-        input("\nThe product doesn't exist\n\nPress any key to continue...")
+        input(f"{Colors.RED}{Colors.BOLD}\nERROR: {Colors.RESET}The product doesn't exist"
+              f"\n\nPress any key to continue...")
         return False
 
     elif product == DatabaseErrors.CONNECTION_LOST:
-        input("\nThe application has lost the connection with the server\n\nPress any key to continue...")
+        conn_lost_msg()
         return False
 
     elif money < product[2]:
-        input("\nYou don't have enough money\n\nPress any key to continue...")
+        input(f"{Colors.YELLOW}{Colors.BOLD}\nWARNING: {Colors.RESET}You don't have enough money"
+              f"\n\nPress any key to continue...")
         return False
 
     return True
@@ -137,15 +139,13 @@ def prod_bought_errors(product, money):
 
 def view_orders_errors(order):
     if order == -1:
-        print("\nYou don't have orders")
-
-        input("\nPress any key to continue...")
+        input(f"{Colors.YELLOW}{Colors.BOLD}\nWARNING: {Colors.RESET}You don't have orders"
+              f"\n\nPress any key to continue...")
         return False
 
     elif not len(order):
-        print("\nYou don't have any orders")
-
-        input("\nPress any key to continue...")
+        input(f"{Colors.YELLOW}{Colors.BOLD}\nWARNING: {Colors.RESET}You don't have any orders"
+              f"\n\nPress any key to continue...")
         return False
 
     elif order == DatabaseErrors.CONNECTION_LOST:
@@ -161,15 +161,12 @@ def search_orders_errors(orders, order_name):
         return False
 
     elif not len(orders):
-        print(f"\nThere isn't any orders with the product: {order_name}")
-
-        input("\nPress any key to continue...")
+        input(f"{Colors.YELLOW}{Colors.BOLD}\nWARNING: {Colors.RESET}There isn't any orders with the product: "
+              f"[{order_name}]\n\nPress any key to continue...")
         return False
 
     elif orders == DatabaseErrors.CONNECTION_LOST:
-        print("\nThe application has lost the connection with the server")
-
-        input("\nPress any key to continue...")
+        conn_lost_msg()
         return False
 
     return True
@@ -179,9 +176,8 @@ def signin_customer_errors(login_cred, database):
     db_cred = database.get_customer_info(login_cred[0])
 
     if db_cred is None:
-        print("\nSomething went wrong with username and password")
-
-        input("\nPress any key to continue...")
+        input(f"{Colors.RED}{Colors.BOLD}\nERROR: {Colors.RESET}Something went wrong with username and password"
+              f"\n\nPress any key to continue...")
         return False
 
     elif db_cred == DatabaseErrors.CONNECTION_LOST:
@@ -190,14 +186,11 @@ def signin_customer_errors(login_cred, database):
 
     # check the password of the database and the password of the login
     elif db_cred[1] == login_cred[1]:
-        print(f"\nIt's nice to see you again {db_cred[2]}")
-
-        input("\nPress any key to continue...")
+        input(f"{Colors.GREEN}{Colors.BOLD}\nWELCOME: {Colors.RESET}[{db_cred[2]}]\n\nPress any key to continue...")
         return Person(db_cred[2], db_cred[3], db_cred[0], db_cred[1], db_cred[4], db_cred[5])
 
-    print("\nSomething went wrong with username and password")
-
-    input("\nPress any key to continue...")
+    input(f"{Colors.RED}{Colors.BOLD}\nERROR: {Colors.RESET}Something went wrong with username and password"
+          f"\n\nPress any key to continue...")
     return False
 
 
@@ -207,14 +200,12 @@ def signin_super_root_errors(login_cred, super_root):
         return False
 
     elif login_cred[0] == super_root[0] and login_cred[1] == super_root[1]:
-        print("\nlogged in as super root")
-
-        input("\nPress any key to continue...")
+        input(f"{Colors.GREEN}{Colors.BOLD}\nSuccessfully logged in as {Colors.RESET}[Super Root]"
+              f"\n\nPress any key to continue...")
         return True
 
-    print("\nSomething went wrong with username or password")
-
-    input("\nPress any key to continue...")
+    input(f"{Colors.RED}{Colors.BOLD}\nERROR: {Colors.RESET}Something went wrong with username or password"
+          f"\n\nPress any key to continue...")
     return False
 
 
@@ -255,14 +246,17 @@ def update_name_product_errors(error, prod_name):
         return
 
     elif error == DatabaseErrors.DATA_ERROR:
-        input(f"\nCan't update the product with the name: {prod_name}\n\nPress any key to continue...")
+        input(f"{Colors.RED}{Colors.BOLD}\nERROR: {Colors.RESET}Can't update the product with the name: [{prod_name}]"
+              f"\n\nPress any key to continue...")
         return
 
     elif error == DatabaseErrors.NAME_ALREADY_EXIST:
-        input(f"\nThere is already a product named: {prod_name}\n\nPress any key to continue...")
+        input(f"{Colors.RED}{Colors.BOLD}\nERROR: {Colors.RESET}There is already a product named: [{prod_name}]"
+              f"\n\nPress any key to continue...")
         return
 
-    input("\nSuccessfully updated the product name\n\nPress any key to continue...")
+    input(f"{Colors.GREEN}{Colors.BOLD}\nSuccessfully updated the product name"
+          f"\n\n{Colors.RESET}Press any key to continue...")
 
 
 def update_qnt_errors(error):
@@ -271,9 +265,8 @@ def update_qnt_errors(error):
         return
 
     elif error == DatabaseErrors.DATA_ERROR:
-        print("\nCan't add the new quantity")
-
-        input("\nPress any key to continue...")
+        input(f"{Colors.RED}{Colors.BOLD}\nERROR: {Colors.RESET}Can't add the new quantity"
+              f"\n\nPress any key to continue...")
         return
 
 
@@ -289,13 +282,17 @@ def add_admin_errors(error, info):
         return False
 
     elif error == DatabaseErrors.DATA_ERROR:
-        input("\nERROR: First Name or Last Name too long\n\nPress any key to continue...")
+        input(f"{Colors.RED}{Colors.BOLD}\nERROR: {Colors.RESET}First Name or Last Name too long"
+              f"\n\nPress any key to continue...")
         return False
 
     elif error == DatabaseErrors.EMAIL_ALREADY_EXIST:
-        print(f"\nThere is already a person with the email: {info[2]}\n\nPress any key to continue...")
+        print(f"{Colors.YELLOW}{Colors.BOLD}\nWARNING: {Colors.RESET}There is already a person with the email: "
+              f"[{info[2]}]"
+              f"\n\nPress any key to continue...")
+        return False
 
-    input("\nSuccessfully added the new root\n\nPress any key to continue...")
+    input(f"{Colors.GREEN}{Colors.BOLD}\nSuccessfully added the New Root{Colors.RESET}\n\nPress any key to continue...")
     return True
 
 
@@ -305,7 +302,7 @@ def print_admin_errors(error):
         return False
 
     elif not len(error):
-        print("\nThere are no admins!!")
+        print(f"{Colors.YELLOW}{Colors.BOLD}\nWARNING: {Colors.RESET}There are no admins!")
         return False
 
     return True
@@ -317,10 +314,12 @@ def delete_admin_errors(error, id_):
         return
 
     elif error == DatabaseErrors.NO_ADMIN_FOUND:
-        input(f"\nNo admin has the id: {id_}\n\nPress any key to continue...")
+        input(f"{Colors.YELLOW}{Colors.BOLD}\nWARNING: {Colors.RESET}No admin has the id: [{id_}]"
+              f"\n\nPress any key to continue...")
         return
 
-    input(f"\nSuccessfully removed the admin with id: {id_}\n\nPress any key to continue...")
+    input(f"{Colors.GREEN}{Colors.BOLD}\nSuccessfully removed the admin with id: {Colors.RESET}[{id_}]"
+          f"\n\nPress any key to continue...")
 
 
 def search_admin_errors(error, admin_name):
@@ -329,7 +328,8 @@ def search_admin_errors(error, admin_name):
         return False
 
     elif len(error) == 0:
-        input(f"\nNo admin found with the name: {admin_name}\n\nPress any key to continue...")
+        input(f"{Colors.YELLOW}{Colors.BOLD}\nWARNING: {Colors.RESET}No admin found with the name: [{admin_name}]"
+              f"\n\nPress any key to continue...")
         return False
 
     return True
@@ -341,10 +341,12 @@ def update_firstname_person(error, first_name):
         return
 
     elif error == DatabaseErrors.DATA_ERROR:
-        input(f"\nCan't update the admin with this name: {first_name}\n\nPress any key to continue...")
+        input(f"{Colors.RED}{Colors.BOLD}\nERROR: {Colors.RESET}Can't update the admin with this name: [{first_name}]"
+              f"\n\nPress any key to continue...")
         return
 
-    input("\nSuccessfully update the first name\n\nPress any key to continue...")
+    input(f"{Colors.GREEN}{Colors.BOLD}\nSuccessfully update the First Name{Colors.RESET}"
+          f"\n\nPress any key to continue...")
 
 
 def update_lastname_person(error, last_name):
@@ -353,10 +355,12 @@ def update_lastname_person(error, last_name):
         return
 
     elif error == DatabaseErrors.DATA_ERROR:
-        input(f"\nCan't update the admin with this last name: {last_name}\n\nPress any key to continue...")
+        input(f"{Colors.RED}{Colors.BOLD}\nERROR: {Colors.RESET}Can't update the admin with this last name: [{last_name}]"
+              f"\n\nPress any key to continue...")
         return
 
-    input("\nSuccessfully update the last name\n\nPress any key to continue...")
+    input(f"{Colors.GREEN}{Colors.BOLD}\nSuccessfully update the Last Name{Colors.RESET}"
+          f"\n\nPress any key to continue...")
 
 
 def update_email_person(error, email):
@@ -365,10 +369,12 @@ def update_email_person(error, email):
         return
 
     elif error == DatabaseErrors.EMAIL_ALREADY_EXIST:
-        input(f"\nThere is already a person with the email: {email}\n\nPress any key to continue...")
+        input(f"{Colors.YELLOW}{Colors.BOLD}\nWARNING: {Colors.RESET}There is already a person with the email: [{email}]"
+              f"\n\nPress any key to continue...")
         return
 
-    input("\nSuccessfully update the email\n\nPress any key to continue...")
+    input(f"{Colors.GREEN}{Colors.BOLD}\nSuccessfully update the email{Colors.RESET}"
+          f"\n\nPress any key to continue...")
 
 
 def update_password_person(error):
@@ -376,7 +382,8 @@ def update_password_person(error):
         conn_lost_msg()
         return
 
-    input("\nSuccessfully update the password\n\nPress any key to continue...")
+    input(f"{Colors.GREEN}{Colors.BOLD}\nSuccessfully update the password{Colors.RESET}"
+          f"\n\nPress any key to continue...")
 
 
 def update_money_person(error):
@@ -384,4 +391,4 @@ def update_money_person(error):
         conn_lost_msg()
         return
 
-    input("\nSuccessfully updated the money\n\nPress any key to continue...")
+    input(f"{Colors.GREEN}{Colors.BOLD}\nSuccessfully updated the money{Colors.RESET}\n\nPress any key to continue...")

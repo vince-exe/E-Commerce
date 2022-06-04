@@ -41,7 +41,7 @@ def clear_screen():
 def get_money(min_, max_):
     money = -1.00
     while money < min_ or money > max_:
-        money = float(input("\nInsert the amount of money: "))
+        money = float(input(f"{Colors.BLU}{Colors.BOLD}\nMoney: {Colors.RESET}"))
 
     return money
 
@@ -57,8 +57,8 @@ def get_info_admin(database):
 
 def get_info_person():
     log_credentials = [
-                       input("\nInsert the First Name: "),
-                       input("\nInsert the Last Name: "),
+                       input(f"{Colors.BLU}{Colors.BOLD}\nFirst Name: {Colors.RESET}"),
+                       input(f"{Colors.BLU}{Colors.BOLD}\nLast Name: {Colors.RESET}"),
                        get_email(CredentialsOptions.EMAIL_MAX_LEN),
                        get_psw(CredentialsOptions.PSW_MAX_LEN),
                        get_money(MoneyOptions.MIN, MoneyOptions.MAX)
@@ -128,10 +128,10 @@ def get_order_id():
     id_ = -1
     while id_ < 0:
         try:
-            id_ = int(input("\nInsert the id of the order: "))
+            id_ = int(input(f"{Colors.BLU}{Colors.BOLD}\nOrder Id: {Colors.RESET}"))
 
         except ValueError:
-            print("\nId must be a number")
+            print(f"{Colors.RED}{Colors.BOLD}\nERROR: {Colors.RESET}Id must be a number")
 
     return id_
 
@@ -151,10 +151,10 @@ def get_id_product():
     id_ = -1
     while id_ <= 0:
         try:
-            id_ = int(input("\nInsert the product id: "))
+            id_ = int(input(f"{Colors.BLU}{Colors.BOLD}\nProduct Id: {Colors.RESET}"))
 
         except ValueError:
-            print("\nId must be a number!!")
+            print(f"{Colors.RED}{Colors.BOLD}\nERROR: {Colors.RESET}Id must be a number!!")
 
     return id_
 
@@ -164,13 +164,15 @@ def get_id_root():
     while id_ <= 1:
         try:
             os.system('cls||clear')
-            id_ = int(input("\nInsert the id: "))
+            id_ = int(input(f"{Colors.BLU}{Colors.BOLD}\nId: {Colors.RESET}"))
 
             if id_ == 1:
-                input("\nCan not effectuate any action on the super root id!!\n\nPress any key to continue...")
+                input(f"{Colors.YELLOW}{Colors.BOLD}\nWARNING: {Colors.RESET}"
+                      f"Can not effectuate any action on the super root id!!\n\nPress any key to continue...")
 
         except ValueError:
-            input("\nId must be a number!!\n\nPress any key to continue...")
+            input(f"{Colors.RED}{Colors.BOLD}\nERROR: {Colors.RESET}Id must be a number!!"
+                  f"\n\nPress any key to continue...")
 
     return id_
 
@@ -180,10 +182,10 @@ def get_prod_qnt():
     while qnt <= 0:
         try:
             os.system('cls||clear')
-            qnt = int(input("\nInsert the quantity: "))
+            qnt = int(input(f"{Colors.BLU}{Colors.BOLD}\nNew Quantity: {Colors.RESET}"))
 
         except ValueError:
-            input("\nQuantity must be a number!")
+            input(f"{Colors.RED}{Colors.BOLD}\nERROR: {Colors.RESET}Quantity must be a number!")
 
     return qnt
 
@@ -193,10 +195,10 @@ def get_prod_price(max_):
     while price <= 0 or price > max_:
         try:
             os.system('cls||clear')
-            price = float(input("\nInsert the price: "))
+            price = float(input(f"\n{Colors.BLU}{Colors.BOLD}New Price: {Colors.RESET}"))
 
         except ValueError:
-            input("\nPrice must be a number!")
+            input(f"{Colors.RED}{Colors.BOLD}\nERROR: {Colors.RESET}Price must be a number!")
 
     return price
 
@@ -213,19 +215,19 @@ def print_products(products_list):
         if product[3] <= 0:
             print(f'''
 * - - - - - - - - - - - - - *
-Id: {product[0]}\n
-Name: {product[1]}\n
-Price: {product[2]}\n
-Quantity: Out of stock
+{Colors.GREEN}{Colors.BOLD}Id: {Colors.RESET}{product[0]}\n
+{Colors.BLU}{Colors.BOLD}Name{Colors.RESET}: {product[1]}\n
+{Colors.GREEN}{Colors.BOLD}Price: {Colors.RESET}{product[2]}\n
+{Colors.BLU}{Colors.BOLD}Quantity: {Colors.RESET}Out of stock
 * - - - - - - - - - - - - - *
             ''')
         else:
             print(f'''
 * - - - - - - - - - - - - - *
-Id: {product[0]}\n
-Name: {product[1]}\n
-Price: {product[2]}\n
-Quantity: {product[3]}
+{Colors.GREEN}{Colors.BOLD}Id: {Colors.RESET}{product[0]}\n
+{Colors.BLU}{Colors.BOLD}Name: {Colors.RESET}{product[1]}\n
+{Colors.GREEN}{Colors.BOLD}Price: {Colors.RESET}{product[2]}\n
+{Colors.BLU}{Colors.BOLD}Quantity: {Colors.RESET}{product[3]}
 * - - - - - - - - - - - - - *
             ''')
 

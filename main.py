@@ -6,7 +6,7 @@ from errors.handle_errors import db_conn_errors
 
 from utilities.utils import print_logo, Colors
 
-info = ['localhost', 'root', 'MySQL85.#(6@', 'ecommerce']
+info = ['localhost', 'root', 'mySQLroot45.&ciao#.', 'ecommerce']
 
 
 if __name__ == '__main__':

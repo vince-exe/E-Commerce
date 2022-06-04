@@ -48,10 +48,12 @@ def initial_customer_menu(database):
     while True:
         try:
             os.system('cls||clear')
-            option = int(input("\n1)Sign In"
-                               "\n2)Sign Up"
-                               "\n3)exit"
-                               "\n\nInsert option (1 / 3): "))
+            option = int(input(f"{Colors.BLU}{Colors.BOLD}\n1) {Colors.RESET}Sign In"
+                               f"{Colors.BLU}{Colors.BOLD}\n2) {Colors.RESET}Sign Up"
+                               f"{Colors.BLU}{Colors.BOLD}\n3) {Colors.RESET}exit"
+                               f"\n\nInsert option (1 / 3): {Colors.BLU}{Colors.BOLD}"))
+
+            print(f"{Colors.RESET}")
 
             if option == GeneralOptions.SIGN_IN:
                 person = signin_customer_errors(get_psw_email_customer(), database)

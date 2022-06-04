@@ -56,6 +56,9 @@ class Database:
         except mysql.connector.errors.OperationalError:
             return DatabaseErrors.CONNECTION_LOST
 
+        except mysql.connector.errors.InterfaceError:
+            return DatabaseErrors.CONNECTION_LOST
+
     def add_product(self, values):
         query = "INSERT INTO product (product_name, price, qnt) VALUES (%s, %s, %s);"
         args = (values[0], f'{values[1]}', values[2])
@@ -72,6 +75,9 @@ class Database:
 
         except mysql.connector.errors.DataError:
             return DatabaseErrors.DATA_ERROR
+
+        except mysql.connector.errors.InterfaceError:
+            return DatabaseErrors.CONNECTION_LOST
 
         self.connection.commit()
 
@@ -91,6 +97,9 @@ class Database:
         except mysql.connector.errors.DataError:
             return DatabaseErrors.DATA_ERROR
 
+        except mysql.connector.errors.InterfaceError:
+            return DatabaseErrors.CONNECTION_LOST
+
         self.connection.commit()
 
     def add_customer(self, customer_email):
@@ -101,6 +110,9 @@ class Database:
             self.cursor.execute(f"INSERT INTO customer (person_id) VALUES ({id_[0]});")
 
         except mysql.connector.OperationalError:
+            return DatabaseErrors.CONNECTION_LOST
+
+        except mysql.connector.errors.InterfaceError:
             return DatabaseErrors.CONNECTION_LOST
 
         self.connection.commit()
@@ -116,6 +128,9 @@ class Database:
         except mysql.connector.errors.OperationalError:
             return DatabaseErrors.CONNECTION_LOST
 
+        except mysql.connector.errors.InterfaceError:
+            return DatabaseErrors.CONNECTION_LOST
+
     def get_customer_info(self, email):
         try:
             self.cursor.execute(f"""SELECT email, psw, first_name, last_name, person.id, money
@@ -128,12 +143,18 @@ class Database:
         except mysql.connector.errors.OperationalError:
             return DatabaseErrors.CONNECTION_LOST
 
+        except mysql.connector.errors.InterfaceError:
+            return DatabaseErrors.CONNECTION_LOST
+
     def get_products(self, limit):
         try:
             self.cursor.execute(f"SELECT * FROM product LIMIT {limit}")
             return self.cursor.fetchall()
 
         except mysql.connector.errors.OperationalError:
+            return DatabaseErrors.CONNECTION_LOST
+
+        except mysql.connector.errors.InterfaceError:
             return DatabaseErrors.CONNECTION_LOST
 
     def get_super_root(self):
@@ -153,6 +174,9 @@ class Database:
             return self.cursor.fetchone()
 
         except mysql.connector.errors.OperationalError:
+            return DatabaseErrors.CONNECTION_LOST
+
+        except mysql.connector.errors.InterfaceError:
             return DatabaseErrors.CONNECTION_LOST
 
     def get_product_searched(self, prod_name, limit):
@@ -221,12 +245,18 @@ class Database:
         except mysql.connector.errors.OperationalError:
             return DatabaseErrors.CONNECTION_LOST
 
+        except mysql.connector.errors.InterfaceError:
+            return DatabaseErrors.CONNECTION_LOST
+
     def customer_change_money(self, credit, person_id):
         try:
             self.cursor.execute(f"UPDATE person SET person.money = {credit} WHERE person.id = {person_id}")
 
         except mysql.connector.errors.OperationalError:
             return False
+
+        except mysql.connector.errors.InterfaceError:
+            return DatabaseErrors.CONNECTION_LOST
 
         self.connection.commit()
         return True
@@ -236,6 +266,9 @@ class Database:
             self.cursor.execute(f"INSERT INTO my_order (customer_id) VALUES ({customer_id});")
 
         except mysql.connector.errors.OperationalError:
+            return DatabaseErrors.CONNECTION_LOST
+
+        except mysql.connector.errors.InterfaceError:
             return DatabaseErrors.CONNECTION_LOST
 
         self.connection.commit()
@@ -262,6 +295,9 @@ class Database:
             return self.cursor.fetchone()
 
         except mysql.connector.errors.OperationalError:
+            return DatabaseErrors.CONNECTION_LOST
+
+        except mysql.connector.errors.InterfaceError:
             return DatabaseErrors.CONNECTION_LOST
 
     def get_last_order(self, customer_id):
@@ -296,6 +332,9 @@ class Database:
         except mysql.connector.errors.OperationalError:
             return DatabaseErrors.CONNECTION_LOST
 
+        except mysql.connector.errors.InterfaceError:
+            return DatabaseErrors.CONNECTION_LOST
+
         except TypeError:
             return DatabaseErrors.CONNECTION_LOST
 
@@ -322,6 +361,9 @@ class Database:
         except mysql.connector.errors.OperationalError:
             return DatabaseErrors.CONNECTION_LOST
 
+        except mysql.connector.errors.InterfaceError:
+            return DatabaseErrors.CONNECTION_LOST
+
     def delete_order(self, order_id):
         try:
             self.cursor.execute('''SET FOREIGN_KEY_CHECKS = 0;''')
@@ -336,6 +378,9 @@ class Database:
         except mysql.connector.errors.OperationalError:
             return DatabaseErrors.CONNECTION_LOST
 
+        except mysql.connector.errors.InterfaceError:
+            return DatabaseErrors.CONNECTION_LOST
+
     def update_qnt_product(self, prod_id, new_qnt):
         try:
             self.cursor.execute(f'''UPDATE product SET product.qnt = "{new_qnt}" WHERE product.id = {prod_id}''')
@@ -345,6 +390,9 @@ class Database:
 
         except mysql.connector.errors.DataError:
             return DatabaseErrors.DATA_ERROR
+
+        except mysql.connector.errors.InterfaceError:
+            return DatabaseErrors.CONNECTION_LOST
 
         self.connection.commit()
 
@@ -364,6 +412,9 @@ class Database:
         except mysql.connector.errors.IntegrityError:
             return DatabaseErrors.NAME_ALREADY_EXIST
 
+        except mysql.connector.errors.InterfaceError:
+            return DatabaseErrors.CONNECTION_LOST
+
         self.connection.commit()
 
     def update_price_product(self, prod_id, new_price):
@@ -371,6 +422,9 @@ class Database:
             self.cursor.execute(f'''UPDATE product SET product.price = "{new_price}" WHERE product.id = {prod_id}''')
 
         except mysql.connector.errors.OperationalError:
+            return DatabaseErrors.CONNECTION_LOST
+
+        except mysql.connector.errors.InterfaceError:
             return DatabaseErrors.CONNECTION_LOST
 
         self.connection.commit()
@@ -381,6 +435,9 @@ class Database:
             return self.cursor.fetchone()
 
         except mysql.connector.errors.OperationalError:
+            return DatabaseErrors.CONNECTION_LOST
+
+        except mysql.connector.errors.InterfaceError:
             return DatabaseErrors.CONNECTION_LOST
 
     def add_root(self):
@@ -394,6 +451,9 @@ class Database:
 
         except mysql.connector.IntegrityError:
             return DatabaseErrors.EMAIL_ALREADY_EXIST
+
+        except mysql.connector.errors.InterfaceError:
+            return DatabaseErrors.CONNECTION_LOST
 
         self.connection.commit()
 
@@ -413,6 +473,9 @@ class Database:
         except mysql.connector.OperationalError:
             return DatabaseErrors.CONNECTION_LOST
 
+        except mysql.connector.errors.InterfaceError:
+            return DatabaseErrors.CONNECTION_LOST
+
     def get_person_id_super_root(self, id_):
         try:
             self.cursor.execute(f"""SELECT administrator.person_id
@@ -424,6 +487,9 @@ class Database:
             return self.cursor.fetchone()
 
         except mysql.connector.OperationalError:
+            return DatabaseErrors.CONNECTION_LOST
+
+        except mysql.connector.errors.InterfaceError:
             return DatabaseErrors.CONNECTION_LOST
 
     def delete_admin(self, admin_id):
@@ -443,6 +509,9 @@ class Database:
             self.connection.commit()
 
         except mysql.connector.errors.OperationalError:
+            return DatabaseErrors.CONNECTION_LOST
+
+        except mysql.connector.errors.InterfaceError:
             return DatabaseErrors.CONNECTION_LOST
 
     def get_admin_searched(self, admin_name, limit):
@@ -476,6 +545,9 @@ class Database:
         except mysql.connector.errors.DataError:
             return DatabaseErrors.DATA_ERROR
 
+        except mysql.connector.errors.InterfaceError:
+            return DatabaseErrors.CONNECTION_LOST
+
         self.connection.commit()
 
     def update_person_last_name(self, new_name, person_id):
@@ -487,6 +559,9 @@ class Database:
 
         except mysql.connector.errors.DataError:
             return DatabaseErrors.DATA_ERROR
+
+        except mysql.connector.errors.InterfaceError:
+            return DatabaseErrors.CONNECTION_LOST
 
         self.connection.commit()
 
@@ -500,6 +575,9 @@ class Database:
         except mysql.connector.errors.IntegrityError:
             return DatabaseErrors.EMAIL_ALREADY_EXIST
 
+        except mysql.connector.errors.InterfaceError:
+            return DatabaseErrors.CONNECTION_LOST
+
         self.connection.commit()
 
     def update_person_password(self, new_psw, person_id):
@@ -508,6 +586,10 @@ class Database:
 
         except mysql.connector.errors.OperationalError:
             return DatabaseErrors.CONNECTION_LOST
+
+        except mysql.connector.errors.InterfaceError:
+            return DatabaseErrors.CONNECTION_LOST
+
         self.connection.commit()
 
     def update_person_money(self, new_money, person_id):
@@ -516,5 +598,8 @@ class Database:
 
         except mysql.connector.errors.OperationalError:
             return DatabaseErrors
+
+        except mysql.connector.errors.InterfaceError:
+            return DatabaseErrors.CONNECTION_LOST
 
         self.connection.commit()
