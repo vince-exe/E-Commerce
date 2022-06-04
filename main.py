@@ -2,16 +2,23 @@ from database import database as db
 
 from menu.general_menu import general_menu
 
-from errors.handle_errors import db_conn_errors
+from errors.handle_errors import db_conn_errors, read_settings_errors
 
 from utilities.utils import print_logo, Colors
-
-info = ['localhost', 'root', 'mySQLroot45.&ciao#.', 'ecommerce']
 
 
 if __name__ == '__main__':
     print_logo()
-    database = db.Database(info[0], info[1], info[2], info[3])
+
+    settings = read_settings_errors('config.json')
+    database = None
+
+    try:
+        database = db.Database(settings['Host'], settings['Username'], settings['Password'], settings['DbName'])
+
+    except KeyError:
+        print(f"\n\t\t\t\t\t    {Colors.RED}{Colors.BOLD}ERROR: {Colors.RESET}Check the json file!!")
+        exit(-1)
 
     try:
         # connect to the database and check if the connection went fine.

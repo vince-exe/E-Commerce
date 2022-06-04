@@ -2,6 +2,24 @@ from utilities.enums import *
 
 from person.person import Person
 
+import json
+
+
+def read_settings_errors(file_name):
+    try:
+        with open(file_name, 'r') as file:
+            data = json.load(file)
+
+        return data
+
+    except FileNotFoundError:
+        print(f"\n\t\t\t\t\t  {Colors.RED}{Colors.BOLD}ERROR: {Colors.RESET}No settings file found")
+        exit(-1)
+
+    except json.decoder.JSONDecodeError:
+        print(f"\n\t\t\t\t\t    {Colors.RED}{Colors.BOLD}ERROR: {Colors.RESET}Check the json file!!")
+        exit(-1)
+
 
 def conn_lost_msg():
     input(f"{Colors.YELLOW}{Colors.BOLD}\nWARNING: {Colors.RED}{Colors.BOLD}The application has lost the connection"
