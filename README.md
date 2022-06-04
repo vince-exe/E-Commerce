@@ -13,14 +13,14 @@
 #### <p align="center">You Can Use the green button "Code" to download the .zip</p><br>
  
 ## <p align="center">Usage 💾</p>
-#### <p align="center">-> Launch the MySQL Server</p>
-#### <p align="center">-> Go in the project folder and open the [ config.json ] file</p>
-#### <p align="center">-> Fill in the [ config.json ] with the right informations</p>
-#### <p align="center">-> Launch the MySQL Server</p>
-#### <p align="center">-> Launch the [ main.py ]</p><br>
+#### <p align="center">1️⃣ -> Launch the MySQL Server</p>
+#### <p align="center">2️⃣ -> Go in the project folder and open the [ config.json ] file</p>
+#### <p align="center">3️⃣ -> Fill in the [ config.json ] with the right informations</p>
+#### <p align="center">4️⃣ -> Launch the MySQL Server</p>
+#### <p align="center">5️⃣ -> Launch the [ main.py ]</p><br>
 
 ## <p align="center">Thank you for visiting my GitHub profile, see ya! 💘💘</p>
 
 <p align="center">
-  <img width="370" height="300" src="https://i.pinimg.com/originals/2d/b5/24/2db5248089afd2e05340ff28b251d5b3.gif">
+  <img src="https://www.icegif.com/wp-content/uploads/icegif-1628.gif" with="500" height="500">
 </p>
