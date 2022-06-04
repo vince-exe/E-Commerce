@@ -32,13 +32,7 @@ if __name__ == '__main__':
     database.get_cursor()
 
     # start the menu function
-    try:
-        if not general_menu(database):
-            print("\nBye")
-
-    except KeyboardInterrupt:
-        print(f"\n\n{Colors.RESET}")
-        database.shut_down()
+    general_menu(database)
 
     # close the connections with the database
     database.shut_down()

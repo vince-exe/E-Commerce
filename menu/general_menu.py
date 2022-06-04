@@ -98,7 +98,7 @@ def general_menu(database):
                 initial_customer_menu(database)
 
             elif option == GeneralMenuOptions.EXIT:
-                return False
+                return
 
             else:
                 input(f"\n{Colors.BLU}{Colors.BOLD}{option} {Colors.RED}{Colors.BOLD}is not a correct option!!"
