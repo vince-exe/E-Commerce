@@ -1,6 +1,7 @@
 {
-  "Host": "localhost",
+  "Host": "#",
+  "Port": 3306,
   "Username": "root",
-  "Password": "mySQLroot45.&ciao#.",
+  "Password": "#",
   "DbName": "ecommerce"
 }

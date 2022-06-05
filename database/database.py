@@ -8,11 +8,12 @@ DATABASE_ERROR = -1
 
 
 class Database:
-    def __init__(self, host, username, password, database):
+    def __init__(self, host, username, password, database, port):
         self.host = host
         self.username = username
         self.password = password
         self.db_name = database
+        self.port = port
         self.cursor = None
         self.connection = None
 
@@ -21,7 +22,8 @@ class Database:
             self.connection = mysql.connector.connect(user=self.username,
                                                       password=self.password,
                                                       host=self.host,
-                                                      database=self.db_name
+                                                      database=self.db_name,
+                                                      port=self.port
                                                       )
 
             return self.connection

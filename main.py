@@ -14,7 +14,12 @@ if __name__ == '__main__':
     database = None
 
     try:
-        database = db.Database(settings['Host'], settings['Username'], settings['Password'], settings['DbName'])
+        database = db.Database(settings['Host'],
+                               settings['Username'],
+                               settings['Password'],
+                               settings['DbName'],
+                               settings['Port']
+                               )
 
     except KeyError:
         print(f"\n\t\t\t\t\t    {Colors.RED}{Colors.BOLD}ERROR: {Colors.RESET}Check the json file!!")
