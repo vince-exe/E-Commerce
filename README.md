@@ -15,10 +15,11 @@
  
 ## <p align="center">Usage 💾</p>
 #### <p align="center">1️⃣ -> Launch the MySQL Server</p>
-#### <p align="center">2️⃣ -> Go in the project folder and open the [ config.json ] file</p>
-#### <p align="center">3️⃣ -> Fill in the [ config.json ] with the right informations</p>
-#### <p align="center">4️⃣ -> Launch the MySQL Server</p>
-#### <p align="center">5️⃣ -> Launch the [ main.py ]</p><br>
+#### <p align="center">2️⃣ -> Run the sql query to create the Database</p>
+#### <p align="center">3️⃣ -> Go in the project folder and open the [ config.json ] file</p>
+#### <p align="center">4️⃣ -> Fill in the [ config.json ] with the right informations</p>
+#### <p align="center">5️⃣ -> Launch the MySQL Server</p>
+#### <p align="center">6️ -> Launch the [ main.py ]</p><br>
 
 ## <p align="center">Thank you for visiting my GitHub profile, see ya! 💘💘</p>
 
