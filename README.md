@@ -4,7 +4,8 @@
 
 ## <p align="center">Requirements</p>
 #### <p align="center">-> 💽 MySQL Server 💽 <- </p>
-#### <p align="center">-> 🐍 Python 🐍 <- </p><br>
+#### <p align="center">-> 🐍 Python 🐍 <- </p>
+#### <p align="center">-> 🤖 mysql-connector-python module 🤖 <- </p><br>
   
 ## <p align="center">Installation [ 1.0 ]</p>
 #### <p align="center">You Can Use: git clone [https://github.com/vince-exe/EasyChat] to clone the repository and use the .zip file.</p><br>
